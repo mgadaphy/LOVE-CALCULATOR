@@ -335,11 +335,10 @@ class UIController {
         }
         if (!allValid) return;
         try {
-            // Calculate compatibility (backup logic)
-            const scores = this.calculateBackupCompatibility(formData);
-            const report = this.generateBackupReport(formData, scores);
-            // Show results
-            await this.showBackupResults(formData, scores, report);
+            // Calculate compatibility (enhanced logic)
+            const scores = this.calculateFullCompatibility(formData);
+            const report = this.generateFullReport(formData, scores);
+            await this.showFullResults(formData, scores, report);
         } catch (error) {
             console.error('Error calculating compatibility:', error);
             this.showErrors({ form: 'An error occurred while calculating compatibility. Please try again.' });
@@ -397,8 +396,8 @@ class UIController {
         }
     }
 
-    // --- Backup logic for compatibility calculation and result ---
-    calculateBackupCompatibility(data) {
+    // --- Enhanced compatibility calculation ---
+    calculateFullCompatibility(data) {
         // Age compatibility
         const yourBirthday = new Date(data.yourBirthday);
         const partnerBirthday = new Date(data.partnerBirthday);
@@ -454,25 +453,56 @@ class UIController {
         } else {
             loveLanguageScore = 50 + Math.random() * 30;
         }
-        // Final score (weighted)
-        const overall = Math.round(
-            (zodiacScore * 0.3) +
-            (personalityScore * 0.25) +
-            (loveLanguageScore * 0.25) +
-            (ageScore * 0.2)
-        );
+        // Religious compatibility
+        let religiousScore = 70;
+        if (data.yourReligion === data.partnerReligion && data.yourReligion !== "") {
+            religiousScore += 20;
+        }
+        if (data.yourReligionImportance === 'very' && data.partnerReligionImportance === 'very') {
+            religiousScore += 5;
+        }
+        if (data.yourConversion === 'yes' && data.partnerConversion === 'yes') {
+            religiousScore += 5;
+        }
+        if (data.yourReligion === 'none' && data.partnerReligion === 'none') {
+            religiousScore += 5;
+        }
+        religiousScore = Math.min(100, Math.max(0, religiousScore));
+        // Cultural compatibility
+        let culturalScore = 70;
+        if (data.yourCulture === data.partnerCulture && data.yourCulture !== "") {
+            culturalScore += 20;
+        }
+        if (data.yourTraditions === 'very' && data.partnerTraditions === 'very') {
+            culturalScore += 5;
+        }
+        if (data.yourLanguage && data.partnerLanguage && data.yourLanguage.toLowerCase() === data.partnerLanguage.toLowerCase()) {
+            culturalScore += 5;
+        }
+        culturalScore = Math.min(100, Math.max(0, culturalScore));
+        // Marriage compatibility (weighted average, more weight to religion/culture)
+        const marriage = Math.round((zodiacScore * 0.15 + personalityScore * 0.15 + loveLanguageScore * 0.15 + ageScore * 0.15 + religiousScore * 0.2 + culturalScore * 0.2));
+        // Overall compatibility (all aspects, equal weight)
+        const overall = Math.round((zodiacScore + personalityScore + loveLanguageScore + ageScore + religiousScore + culturalScore) / 6);
         return {
             overall,
+            marriage,
             zodiac: Math.round(zodiacScore),
             personality: Math.round(personalityScore),
             loveLanguage: Math.round(loveLanguageScore),
-            age: Math.round(ageScore)
+            age: Math.round(ageScore),
+            religious: Math.round(religiousScore),
+            cultural: Math.round(culturalScore)
         };
     }
 
-    generateBackupReport(data, scores) {
-        const strengths = [];
-        const challenges = [];
+    generateFullReport(data, scores) {
+        // General strengths/challenges
+        const strengths = [], challenges = [];
+        // Religious
+        const religiousStrengths = [], religiousChallenges = [];
+        // Cultural
+        const culturalStrengths = [], culturalChallenges = [];
         // Zodiac
         const zodiacCompatibility = {
             aries: { best: ['leo', 'sagittarius', 'gemini', 'aquarius'], worst: ['cancer', 'capricorn'] },
@@ -526,7 +556,42 @@ class UIController {
         } else {
             challenges.push(`Your significant age difference may create generational gaps`);
         }
-        return { strengths, challenges };
+        // Religious strengths/challenges
+        if (data.yourReligion === data.partnerReligion && data.yourReligion !== "") {
+            religiousStrengths.push("You share the same religious background, which can foster unity.");
+        } else if (data.yourReligion !== data.partnerReligion && data.yourReligion && data.partnerReligion) {
+            religiousChallenges.push("Different religious backgrounds may require extra understanding and respect.");
+        }
+        if (data.yourReligionImportance === 'very' && data.partnerReligionImportance === 'very') {
+            religiousStrengths.push("Religion is very important to both of you, which can strengthen your bond.");
+        } else if (data.yourReligionImportance !== data.partnerReligionImportance) {
+            religiousChallenges.push("Religion holds different levels of importance for each of you.");
+        }
+        if (data.yourConversion === 'yes' && data.partnerConversion === 'yes') {
+            religiousStrengths.push("Both are open to conversion, showing flexibility.");
+        } else if (data.yourConversion === 'no' || data.partnerConversion === 'no') {
+            religiousChallenges.push("One or both of you are not open to conversion, which may limit compromise.");
+        }
+        if (data.yourReligion === 'none' && data.partnerReligion === 'none') {
+            religiousStrengths.push("Neither of you is religious, which can reduce potential conflicts.");
+        }
+        // Cultural strengths/challenges
+        if (data.yourCulture === data.partnerCulture && data.yourCulture !== "") {
+            culturalStrengths.push("You share the same cultural background, which can make traditions and values easier to align.");
+        } else if (data.yourCulture !== data.partnerCulture && data.yourCulture && data.partnerCulture) {
+            culturalChallenges.push("Different cultural backgrounds may require adaptation and open-mindedness.");
+        }
+        if (data.yourTraditions === 'very' && data.partnerTraditions === 'very') {
+            culturalStrengths.push("Cultural traditions are very important to both of you, which can create strong family bonds.");
+        } else if (data.yourTraditions !== data.partnerTraditions) {
+            culturalChallenges.push("Traditions hold different levels of importance for each of you.");
+        }
+        if (data.yourLanguage && data.partnerLanguage && data.yourLanguage.toLowerCase() === data.partnerLanguage.toLowerCase()) {
+            culturalStrengths.push("You share the same primary language, making communication easier.");
+        } else if (data.yourLanguage && data.partnerLanguage && data.yourLanguage.toLowerCase() !== data.partnerLanguage.toLowerCase()) {
+            culturalChallenges.push("Different primary languages may require extra effort in communication.");
+        }
+        return { strengths, challenges, religiousStrengths, religiousChallenges, culturalStrengths, culturalChallenges };
     }
 
     getLoveLanguageName(code) {
@@ -540,7 +605,7 @@ class UIController {
         return names[code] || code;
     }
 
-    async showBackupResults(formData, scores, report) {
+    async showFullResults(formData, scores, report) {
         // Set names
         document.getElementById('yourNameResult').textContent = formData.yourName;
         document.getElementById('partnerNameResult').textContent = formData.partnerName;
@@ -549,9 +614,13 @@ class UIController {
         document.getElementById('personalityScore').textContent = scores.personality + '%';
         document.getElementById('loveLanguageScore').textContent = scores.loveLanguage + '%';
         document.getElementById('ageScore').textContent = scores.age + '%';
-        // Set compatibility title
-        let compatibilityTitle = '';
-        let compatibilityClass = '';
+        document.getElementById('religiousScore').textContent = scores.religious + '%';
+        document.getElementById('culturalScore').textContent = scores.cultural + '%';
+        document.getElementById('compatibilityPercent').textContent = scores.overall + '%';
+        document.getElementById('marriagePercent').textContent = scores.marriage + '%';
+        // Set compatibility titles
+        let compatibilityTitle = '', marriageTitle = '';
+        let compatibilityClass = '', marriageClass = '';
         if (scores.overall >= 80) {
             compatibilityTitle = 'Perfect Match!';
             compatibilityClass = 'text-green-600';
@@ -565,46 +634,63 @@ class UIController {
             compatibilityTitle = 'Challenging Match';
             compatibilityClass = 'text-red-600';
         }
+        if (scores.marriage >= 80) {
+            marriageTitle = 'Excellent Marriage Potential!';
+            marriageClass = 'text-green-700';
+        } else if (scores.marriage >= 60) {
+            marriageTitle = 'Good Marriage Potential';
+            marriageClass = 'text-blue-700';
+        } else if (scores.marriage >= 40) {
+            marriageTitle = 'Possible Marriage Match';
+            marriageClass = 'text-yellow-700';
+        } else {
+            marriageTitle = 'Marriage May Be Challenging';
+            marriageClass = 'text-red-700';
+        }
         document.getElementById('compatibilityTitle').textContent = compatibilityTitle;
         document.getElementById('compatibilityTitle').className = `text-2xl font-semibold ${compatibilityClass}`;
+        document.getElementById('marriageTitle').textContent = marriageTitle;
+        document.getElementById('marriageTitle').className = `text-xl font-semibold ${marriageClass}`;
         // Set strengths and challenges
-        const strengthsList = document.getElementById('strengthsList');
-        const challengesList = document.getElementById('challengesList');
-        strengthsList.innerHTML = '';
-        challengesList.innerHTML = '';
-        report.strengths.forEach(text => {
-            const li = document.createElement('li');
-            li.textContent = text;
-            li.className = 'mb-1';
-            strengthsList.appendChild(li);
-        });
-        report.challenges.forEach(text => {
-            const li = document.createElement('li');
-            li.textContent = text;
-            li.className = 'mb-1';
-            challengesList.appendChild(li);
-        });
-        // Relationship advice
+        const setList = (id, arr) => {
+            const el = document.getElementById(id);
+            el.innerHTML = '';
+            arr.forEach(text => {
+                const li = document.createElement('li');
+                li.textContent = text;
+                li.className = 'mb-1';
+                el.appendChild(li);
+            });
+        };
+        setList('strengthsList', report.strengths);
+        setList('challengesList', report.challenges);
+        setList('religiousStrengthsList', report.religiousStrengths);
+        setList('religiousChallengesList', report.religiousChallenges);
+        setList('culturalStrengthsList', report.culturalStrengths);
+        setList('culturalChallengesList', report.culturalChallenges);
+        // Relationship & marriage advice
         const adviceElement = document.getElementById('relationshipAdvice');
-        if (scores.overall >= 80) {
-            adviceElement.textContent = `Your relationship has excellent foundations! Focus on maintaining open communication and continuing to nurture your strong connection.`;
-        } else if (scores.overall >= 60) {
-            adviceElement.textContent = `You have great potential for a fulfilling relationship. Work on understanding each other's needs and finding common ground in areas where you differ.`;
-        } else if (scores.overall >= 40) {
-            adviceElement.textContent = `Your relationship may require extra effort to succeed. Focus on your strengths while being patient with your differences. Consider whether you're both willing to compromise where needed.`;
+        if (scores.marriage >= 80) {
+            adviceElement.textContent = `You have excellent marriage potential! Shared values and strong compatibility across all aspects will help you build a lasting relationship.`;
+        } else if (scores.marriage >= 60) {
+            adviceElement.textContent = `You have good marriage potential. Focus on understanding each other's backgrounds and values to strengthen your bond.`;
+        } else if (scores.marriage >= 40) {
+            adviceElement.textContent = `Marriage is possible, but you may need to work on bridging differences in religion or culture. Open communication and respect are key.`;
         } else {
-            adviceElement.textContent = `Your relationship may face significant challenges. If you're committed to making it work, focus on clear communication, mutual respect, and finding ways to bridge your differences.`;
+            adviceElement.textContent = `Marriage may be challenging due to significant differences. If you are committed, focus on empathy, compromise, and mutual respect.`;
         }
         // Show result container
         document.getElementById('resultContainer').classList.remove('hidden');
-        // Animate the progress bars and circle
+        // Animate the progress bars and circles
         setTimeout(() => {
-            document.getElementById('compatibilityPercent').textContent = scores.overall + '%';
             document.getElementById('compatibilityCircle').style.strokeDashoffset = 283 - (283 * scores.overall / 100);
+            document.getElementById('marriageCircle').style.strokeDashoffset = 283 - (283 * scores.marriage / 100);
             document.getElementById('zodiacBar').style.width = scores.zodiac + '%';
             document.getElementById('personalityBar').style.width = scores.personality + '%';
             document.getElementById('loveLanguageBar').style.width = scores.loveLanguage + '%';
             document.getElementById('ageBar').style.width = scores.age + '%';
+            document.getElementById('religiousBar').style.width = scores.religious + '%';
+            document.getElementById('culturalBar').style.width = scores.cultural + '%';
         }, 100);
         // Scroll to results
         document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
