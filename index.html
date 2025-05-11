@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love & Marriage Compatibility Calculator</title>
+    <meta name="description" content="Calculate your love and marriage compatibility based on multiple dimensions">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f9c5d1 0%, #fce4ec 50%, #f8bbd0 100%);
+        }
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        .progress-bar {
+            transition: width 2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-pink-600 mb-4">
+                <i class="fas fa-heart text-red-500 mr-2 heart-beat"></i>
+                Love & Marriage Compatibility Calculator
+            </h1>
+            <p class="text-lg text-gray-700">Discover your romantic and marital compatibility based on multiple dimensions</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="p-8">
+                <form id="loveForm">
+                    <!-- Tab Navigation -->
+                    <div class="tab-navigation">
+                        <button type="button" class="tab-button active" data-tab="personal" aria-selected="true">
+                            <i class="fas fa-user mr-2"></i>Personal
+                        </button>
+                        <button type="button" class="tab-button" data-tab="religious" aria-selected="false">
+                            <i class="fas fa-praying-hands mr-2"></i>Religious
+                        </button>
+                        <button type="button" class="tab-button" data-tab="cultural" aria-selected="false">
+                            <i class="fas fa-globe mr-2"></i>Cultural
+                        </button>
+                    </div>
+                    
+                    <!-- Personal Tab -->
+                    <div id="personal" class="tab-content active">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-user mr-2"></i>About You
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="yourName" class="form-label">Your Name</label>
+                                    <input type="text" id="yourName" name="yourName" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourGender" class="form-label">Your Gender</label>
+                                    <select id="yourGender" name="yourGender" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourBirthday" class="form-label">Your Birthday</label>
+                                    <input type="date" id="yourBirthday" name="yourBirthday" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourZodiac" class="form-label">Your Zodiac Sign</label>
+                                    <select id="yourZodiac" name="yourZodiac" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="aries">Aries (Mar 21 - Apr 19)</option>
+                                        <option value="taurus">Taurus (Apr 20 - May 20)</option>
+                                        <option value="gemini">Gemini (May 21 - Jun 20)</option>
+                                        <option value="cancer">Cancer (Jun 21 - Jul 22)</option>
+                                        <option value="leo">Leo (Jul 23 - Aug 22)</option>
+                                        <option value="virgo">Virgo (Aug 23 - Sep 22)</option>
+                                        <option value="libra">Libra (Sep 23 - Oct 22)</option>
+                                        <option value="scorpio">Scorpio (Oct 23 - Nov 21)</option>
+                                        <option value="sagittarius">Sagittarius (Nov 22 - Dec 21)</option>
+                                        <option value="capricorn">Capricorn (Dec 22 - Jan 19)</option>
+                                        <option value="aquarius">Aquarius (Jan 20 - Feb 18)</option>
+                                        <option value="pisces">Pisces (Feb 19 - Mar 20)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourPersonality" class="form-label">Your Personality Type</label>
+                                    <select id="yourPersonality" name="yourPersonality" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="extrovert">Extrovert (Outgoing, social)</option>
+                                        <option value="introvert">Introvert (Reserved, thoughtful)</option>
+                                        <option value="ambivert">Ambivert (Balanced between both)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourLoveLanguage" class="form-label">Your Love Language</label>
+                                    <select id="yourLoveLanguage" name="yourLoveLanguage" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="words">Words of Affirmation</option>
+                                        <option value="time">Quality Time</option>
+                                        <option value="gifts">Receiving Gifts</option>
+                                        <option value="acts">Acts of Service</option>
+                                        <option value="touch">Physical Touch</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-heart mr-2"></i>About Your Partner
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="partnerName" class="form-label">Partner's Name</label>
+                                    <input type="text" id="partnerName" name="partnerName" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerGender" class="form-label">Partner's Gender</label>
+                                    <select id="partnerGender" name="partnerGender" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerBirthday" class="form-label">Partner's Birthday</label>
+                                    <input type="date" id="partnerBirthday" name="partnerBirthday" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerZodiac" class="form-label">Partner's Zodiac Sign</label>
+                                    <select id="partnerZodiac" name="partnerZodiac" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="aries">Aries (Mar 21 - Apr 19)</option>
+                                        <option value="taurus">Taurus (Apr 20 - May 20)</option>
+                                        <option value="gemini">Gemini (May 21 - Jun 20)</option>
+                                        <option value="cancer">Cancer (Jun 21 - Jul 22)</option>
+                                        <option value="leo">Leo (Jul 23 - Aug 22)</option>
+                                        <option value="virgo">Virgo (Aug 23 - Sep 22)</option>
+                                        <option value="libra">Libra (Sep 23 - Oct 22)</option>
+                                        <option value="scorpio">Scorpio (Oct 23 - Nov 21)</option>
+                                        <option value="sagittarius">Sagittarius (Nov 22 - Dec 21)</option>
+                                        <option value="capricorn">Capricorn (Dec 22 - Jan 19)</option>
+                                        <option value="aquarius">Aquarius (Jan 20 - Feb 18)</option>
+                                        <option value="pisces">Pisces (Feb 19 - Mar 20)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerPersonality" class="form-label">Partner's Personality Type</label>
+                                    <select id="partnerPersonality" name="partnerPersonality" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="extrovert">Extrovert (Outgoing, social)</option>
+                                        <option value="introvert">Introvert (Reserved, thoughtful)</option>
+                                        <option value="ambivert">Ambivert (Balanced between both)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerLoveLanguage" class="form-label">Partner's Love Language</label>
+                                    <select id="partnerLoveLanguage" name="partnerLoveLanguage" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="words">Words of Affirmation</option>
+                                        <option value="time">Quality Time</option>
+                                        <option value="gifts">Receiving Gifts</option>
+                                        <option value="acts">Acts of Service</option>
+                                        <option value="touch">Physical Touch</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button type="button" class="next-tab-btn bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105" data-next="religious">
+                                Next <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Religious Tab -->
+                    <div id="religious" class="tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-praying-hands mr-2"></i>Your Religious Views
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="yourReligion" class="form-label">Your Religion</label>
+                                    <select id="yourReligion" name="yourReligion" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="christianity">Christianity</option>
+                                        <option value="islam">Islam</option>
+                                        <option value="hinduism">Hinduism</option>
+                                        <option value="buddhism">Buddhism</option>
+                                        <option value="judaism">Judaism</option>
+                                        <option value="sikhism">Sikhism</option>
+                                        <option value="other">Other Religion</option>
+                                        <option value="none">No Religion</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourReligionImportance" class="form-label">How important is religion in your life?</label>
+                                    <select id="yourReligionImportance" name="yourReligionImportance" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="very">Very important</option>
+                                        <option value="somewhat">Somewhat important</option>
+                                        <option value="not">Not important</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourConversion" class="form-label">Would you consider converting to your partner's religion?</label>
+                                    <select id="yourConversion" name="yourConversion" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes, definitely</option>
+                                        <option value="maybe">Maybe, if I felt a connection</option>
+                                        <option value="no">No, never</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-praying-hands mr-2"></i>Partner's Religious Views
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="partnerReligion" class="form-label">Partner's Religion</label>
+                                    <select id="partnerReligion" name="partnerReligion" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="christianity">Christianity</option>
+                                        <option value="islam">Islam</option>
+                                        <option value="hinduism">Hinduism</option>
+                                        <option value="buddhism">Buddhism</option>
+                                        <option value="judaism">Judaism</option>
+                                        <option value="sikhism">Sikhism</option>
+                                        <option value="other">Other Religion</option>
+                                        <option value="none">No Religion</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerReligionImportance" class="form-label">How important is religion to your partner?</label>
+                                    <select id="partnerReligionImportance" name="partnerReligionImportance" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="very">Very important</option>
+                                        <option value="somewhat">Somewhat important</option>
+                                        <option value="not">Not important</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerConversion" class="form-label">Would your partner consider converting to your religion?</label>
+                                    <select id="partnerConversion" name="partnerConversion" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes, definitely</option>
+                                        <option value="maybe">Maybe, if they felt a connection</option>
+                                        <option value="no">No, never</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button type="button" class="back-tab-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105" data-back="personal">
+                                <i class="fas fa-arrow-left mr-2"></i> Back
+                            </button>
+                            <button type="button" class="next-tab-btn bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105" data-next="cultural">
+                                Next <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cultural Tab -->
+                    <div id="cultural" class="tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-globe mr-2"></i>Your Cultural Background
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="yourCulture" class="form-label">Your Cultural Background</label>
+                                    <select id="yourCulture" name="yourCulture" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="western">Western</option>
+                                        <option value="eastern">Eastern</option>
+                                        <option value="african">African</option>
+                                        <option value="middle_eastern">Middle Eastern</option>
+                                        <option value="latin">Latin American</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourLanguage" class="form-label">Your Primary Language</label>
+                                    <input type="text" id="yourLanguage" name="yourLanguage" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="yourTraditions" class="form-label">How important are cultural traditions to you?</label>
+                                    <select id="yourTraditions" name="yourTraditions" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="very">Very important</option>
+                                        <option value="somewhat">Somewhat important</option>
+                                        <option value="not">Not important</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
+                                    <i class="fas fa-globe mr-2"></i>Partner's Cultural Background
+                                </h2>
+                                
+                                <div class="form-group">
+                                    <label for="partnerCulture" class="form-label">Partner's Cultural Background</label>
+                                    <select id="partnerCulture" name="partnerCulture" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="western">Western</option>
+                                        <option value="eastern">Eastern</option>
+                                        <option value="african">African</option>
+                                        <option value="middle_eastern">Middle Eastern</option>
+                                        <option value="latin">Latin American</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerLanguage" class="form-label">Partner's Primary Language</label>
+                                    <input type="text" id="partnerLanguage" name="partnerLanguage" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="partnerTraditions" class="form-label">How important are cultural traditions to your partner?</label>
+                                    <select id="partnerTraditions" name="partnerTraditions" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="very">Very important</option>
+                                        <option value="somewhat">Somewhat important</option>
+                                        <option value="not">Not important</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button type="button" class="back-tab-btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105" data-back="religious">
+                                <i class="fas fa-arrow-left mr-2"></i> Back
+                            </button>
+                            <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                                <i class="fas fa-heartbeat mr-2"></i> Calculate Compatibility
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="resultContainer" class="hidden mt-12">
+            <div class="result-card rounded-xl p-8 shadow-2xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-pink-600 mb-2">
+                        <span id="yourNameResult"></span> & <span id="partnerNameResult"></span>
+                    </h2>
+                    <p class="text-gray-600">Your love compatibility results</p>
+                </div>
+                <div class="flex flex-col items-center mb-8">
+                    <div class="relative w-64 h-64 mb-4">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#f3f4f6" stroke-width="8"/>
+                            <circle id="compatibilityCircle" cx="50" cy="50" r="45" fill="none" stroke="#ec4899" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+                            <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" class="text-4xl font-bold fill-pink-600" id="compatibilityPercent">0%</text>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800" id="compatibilityTitle">Calculating...</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-pink-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-pink-700 mb-2"><i class="fas fa-star mr-2"></i>Strengths</h4>
+                        <ul class="list-disc list-inside text-gray-700" id="strengthsList"></ul>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-700 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Challenges</h4>
+                        <ul class="list-disc list-inside text-gray-700" id="challengesList"></ul>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h4 class="font-semibold text-gray-800 mb-2"><i class="fas fa-chart-pie mr-2"></i>Compatibility Breakdown</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Zodiac Compatibility</span>
+                                <span class="text-sm font-medium text-gray-700" id="zodiacScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-purple-600 h-2.5 rounded-full progress-bar" id="zodiacBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Personality Match</span>
+                                <span class="text-sm font-medium text-gray-700" id="personalityScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full progress-bar" id="personalityBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Love Language</span>
+                                <span class="text-sm font-medium text-gray-700" id="loveLanguageScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-pink-600 h-2.5 rounded-full progress-bar" id="loveLanguageBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Age Compatibility</span>
+                                <span class="text-sm font-medium text-gray-700" id="ageScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-600 h-2.5 rounded-full progress-bar" id="ageBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-lightbulb text-yellow-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold text-yellow-800">Relationship Advice</h4>
+                            <p class="text-yellow-700" id="relationshipAdvice"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button onclick="window.location.reload()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full shadow">
+                        <i class="fas fa-redo mr-2"></i> Try Another Match
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
