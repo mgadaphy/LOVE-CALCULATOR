@@ -652,22 +652,29 @@ class UIController {
         document.getElementById('marriageTitle').textContent = marriageTitle;
         document.getElementById('marriageTitle').className = `text-xl font-semibold ${marriageClass}`;
         // Set strengths and challenges
-        const setList = (id, arr) => {
+        const setList = (id, arr, label) => {
             const el = document.getElementById(id);
             el.innerHTML = '';
-            arr.forEach(text => {
+            if (arr.length === 0) {
                 const li = document.createElement('li');
-                li.textContent = text;
-                li.className = 'mb-1';
+                li.textContent = `No ${label} identified.`;
+                li.className = 'mb-1 italic text-gray-400';
                 el.appendChild(li);
-            });
+            } else {
+                arr.forEach(text => {
+                    const li = document.createElement('li');
+                    li.textContent = text;
+                    li.className = 'mb-1';
+                    el.appendChild(li);
+                });
+            }
         };
-        setList('strengthsList', report.strengths);
-        setList('challengesList', report.challenges);
-        setList('religiousStrengthsList', report.religiousStrengths);
-        setList('religiousChallengesList', report.religiousChallenges);
-        setList('culturalStrengthsList', report.culturalStrengths);
-        setList('culturalChallengesList', report.culturalChallenges);
+        setList('strengthsList', report.strengths, 'general strengths');
+        setList('challengesList', report.challenges, 'general challenges');
+        setList('religiousStrengthsList', report.religiousStrengths, 'religious strengths');
+        setList('religiousChallengesList', report.religiousChallenges, 'religious challenges');
+        setList('culturalStrengthsList', report.culturalStrengths, 'cultural strengths');
+        setList('culturalChallengesList', report.culturalChallenges, 'cultural challenges');
         // Relationship & marriage advice
         const adviceElement = document.getElementById('relationshipAdvice');
         if (scores.marriage >= 80) {
