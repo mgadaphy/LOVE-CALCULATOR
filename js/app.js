@@ -403,6 +403,36 @@ class UIController {
             button.addEventListener('keydown', this.handleTabKeydown.bind(this));
         });
 
+        // New feature buttons (will be added after results are shown)
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'shareBtn' || e.target.closest('#shareBtn')) {
+                this.handleShare();
+            }
+            if (e.target.id === 'printBtn' || e.target.closest('#printBtn')) {
+                this.handlePrint();
+            }
+            if (e.target.id === 'historyBtn' || e.target.closest('#historyBtn')) {
+                this.showHistory();
+            }
+            if (e.target.id === 'closeHistoryBtn' || e.target.closest('#closeHistoryBtn')) {
+                this.closeHistory();
+            }
+        });
+
+        // Close modal on outside click
+        document.getElementById('historyModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'historyModal') {
+                this.closeHistory();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !document.getElementById('historyModal').classList.contains('hidden')) {
+                this.closeHistory();
+            }
+        });
+
         // Add global error handler for better UX
         window.addEventListener('error', this.handleGlobalError.bind(this));
     }
@@ -902,10 +932,147 @@ class UIController {
         }, 100);
         // Scroll to results
         document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+
+        // Save to localStorage
+        utils.saveToLocalStorage({
+            timestamp: new Date().toISOString(),
+            names: {
+                yours: formData.yourName,
+                partner: formData.partnerName
+            },
+            scores: scores,
+            report: report
+        });
+    }
+
+    /**
+     * Handle share button click
+     * Uses Web Share API if available, otherwise copies to clipboard
+     */
+    async handleShare() {
+        const yourName = document.getElementById('yourNameResult').textContent;
+        const partnerName = document.getElementById('partnerNameResult').textContent;
+        const score = document.getElementById('compatibilityPercent').textContent;
+        const marriageScore = document.getElementById('marriagePercent').textContent;
+
+        const shareText = `${yourName} & ${partnerName} Compatibility Results!\n\n❤️ Love: ${score}\n💍 Marriage: ${marriageScore}\n\nCalculate your compatibility at ${window.location.href}`;
+
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'Love Compatibility Results',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to clipboard
+                await navigator.clipboard.writeText(shareText);
+                alert('Results copied to clipboard! Share them with your friends.');
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+            // Manual fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = shareText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Results copied to clipboard!');
+        }
+    }
+
+    /**
+     * Handle print button click
+     * Opens browser print dialog
+     */
+    handlePrint() {
+        window.print();
+    }
+
+    /**
+     * Show calculation history modal
+     */
+    showHistory() {
+        const history = utils.getFromLocalStorage();
+        const historyContent = document.getElementById('historyContent');
+        const emptyHistory = document.getElementById('emptyHistory');
+        const modal = document.getElementById('historyModal');
+
+        historyContent.innerHTML = '';
+
+        if (history.length === 0) {
+            emptyHistory.classList.remove('hidden');
+            historyContent.classList.add('hidden');
+        } else {
+            emptyHistory.classList.add('hidden');
+            historyContent.classList.remove('hidden');
+
+            history.forEach((item, index) => {
+                const date = new Date(item.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+                const historyItem = document.createElement('div');
+                historyItem.className = 'bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition';
+                historyItem.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-pink-600">
+                                ${utils.sanitize(item.names.yours)} & ${utils.sanitize(item.names.partner)}
+                            </h3>
+                            <p class="text-xs text-gray-500">
+                                <i class="far fa-clock mr-1"></i>${dateStr}
+                            </p>
+                        </div>
+                        <button onclick="app.deleteHistoryItem(${index})" class="text-red-500 hover:text-red-700 transition" aria-label="Delete this entry">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="bg-pink-50 rounded p-2">
+                            <div class="text-2xl font-bold text-pink-600">${item.scores.overall}%</div>
+                            <div class="text-xs text-gray-600">Love</div>
+                        </div>
+                        <div class="bg-green-50 rounded p-2">
+                            <div class="text-2xl font-bold text-green-600">${item.scores.marriage}%</div>
+                            <div class="text-xs text-gray-600">Marriage</div>
+                        </div>
+                        <div class="bg-blue-50 rounded p-2">
+                            <div class="text-2xl font-bold text-blue-600">${item.scores.zodiac}%</div>
+                            <div class="text-xs text-gray-600">Zodiac</div>
+                        </div>
+                    </div>
+                `;
+                historyContent.appendChild(historyItem);
+            });
+        }
+
+        modal.classList.remove('hidden');
+        // Trap focus in modal
+        document.getElementById('closeHistoryBtn').focus();
+    }
+
+    /**
+     * Close history modal
+     */
+    closeHistory() {
+        document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    /**
+     * Delete a specific history item
+     * @param {number} index - Index of item to delete
+     */
+    deleteHistoryItem(index) {
+        const history = utils.getFromLocalStorage();
+        history.splice(index, 1);
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(history));
+        this.showHistory(); // Refresh the display
     }
 }
 
 // Initialize the application
+let app; // Global reference for history delete
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new UIController();
+    app = new UIController();
 }); 

@@ -523,10 +523,49 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <button onclick="window.location.reload()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full shadow">
-                        <i class="fas fa-redo mr-2"></i> Try Another Match
+                <div class="text-center space-y-4">
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="window.location.reload()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
+                            <i class="fas fa-redo mr-2"></i> Try Another Match
+                        </button>
+                        <button id="shareBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
+                            <i class="fas fa-share-alt mr-2"></i> Share Results
+                        </button>
+                        <button id="printBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
+                            <i class="fas fa-print mr-2"></i> Print
+                        </button>
+                    </div>
+                    <div>
+                        <button id="historyBtn" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-5 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fas fa-history mr-2"></i> View History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-labelledby="historyModalTitle" aria-modal="true">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-pink-500 to-purple-500 p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 id="historyModalTitle" class="text-2xl font-bold">
+                        <i class="fas fa-history mr-2"></i>Calculation History
+                    </h2>
+                    <button id="closeHistoryBtn" class="text-white hover:bg-white/20 rounded-full p-2 transition" aria-label="Close history">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div id="historyContent" class="space-y-4">
+                    <!-- History items will be inserted here -->
+                </div>
+                <div id="emptyHistory" class="text-center py-12 text-gray-500 hidden">
+                    <i class="fas fa-inbox text-6xl mb-4 opacity-30"></i>
+                    <p class="text-lg">No calculation history yet</p>
+                    <p class="text-sm">Your previous calculations will appear here</p>
                 </div>
             </div>
         </div>
