@@ -53,6 +53,53 @@ const COMPATIBILITY_SCORES = {
 const DISCLAIMER = "This calculator is for entertainment and educational purposes only. Results should not be used to make serious relationship decisions.";
 
 /**
+ * Chinese Zodiac Compatibility Matrix
+ * Based on traditional Chinese astrology (12-year cycle)
+ * @constant
+ */
+const CHINESE_ZODIAC = {
+    rat: { years: [1924, 1936, 1948, 1960, 1972, 1984, 1996, 2008, 2020], best: ['dragon', 'monkey', 'ox'], worst: ['horse', 'rooster'] },
+    ox: { years: [1925, 1937, 1949, 1961, 1973, 1985, 1997, 2009, 2021], best: ['rat', 'snake', 'rooster'], worst: ['sheep', 'horse'] },
+    tiger: { years: [1926, 1938, 1950, 1962, 1974, 1986, 1998, 2010, 2022], best: ['horse', 'dog', 'pig'], worst: ['snake', 'monkey'] },
+    rabbit: { years: [1927, 1939, 1951, 1963, 1975, 1987, 1999, 2011, 2023], best: ['sheep', 'pig', 'dog'], worst: ['rooster', 'rat'] },
+    dragon: { years: [1928, 1940, 1952, 1964, 1976, 1988, 2000, 2012, 2024], best: ['rat', 'monkey', 'rooster'], worst: ['dog', 'rabbit'] },
+    snake: { years: [1929, 1941, 1953, 1965, 1977, 1989, 2001, 2013, 2025], best: ['ox', 'rooster'], worst: ['tiger', 'pig'] },
+    horse: { years: [1930, 1942, 1954, 1966, 1978, 1990, 2002, 2014], best: ['tiger', 'sheep', 'dog'], worst: ['rat', 'ox'] },
+    sheep: { years: [1931, 1943, 1955, 1967, 1979, 1991, 2003, 2015], best: ['rabbit', 'horse', 'pig'], worst: ['ox', 'dog'] },
+    monkey: { years: [1932, 1944, 1956, 1968, 1980, 1992, 2004, 2016], best: ['rat', 'dragon'], worst: ['tiger', 'pig'] },
+    rooster: { years: [1933, 1945, 1957, 1969, 1981, 1993, 2005, 2017], best: ['ox', 'snake', 'dragon'], worst: ['rabbit', 'dog'] },
+    dog: { years: [1934, 1946, 1958, 1970, 1982, 1994, 2006, 2018], best: ['rabbit', 'tiger', 'horse'], worst: ['dragon', 'sheep'] },
+    pig: { years: [1935, 1947, 1959, 1971, 1983, 1995, 2007, 2019], best: ['rabbit', 'sheep', 'tiger'], worst: ['snake', 'monkey'] }
+};
+
+/**
+ * Celebrity Database for Celebrity Match Feature
+ * @constant
+ */
+const CELEBRITIES = [
+    { name: "Ryan Reynolds", birthday: "1976-10-23", zodiac: "scorpio", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Blake Lively", birthday: "1987-08-25", zodiac: "virgo", gender: "female", personality: "extrovert", loveLanguage: "time" },
+    { name: "Chris Hemsworth", birthday: "1983-08-11", zodiac: "leo", gender: "male", personality: "extrovert", loveLanguage: "touch" },
+    { name: "Scarlett Johansson", birthday: "1984-11-22", zodiac: "sagittarius", gender: "female", personality: "ambivert", loveLanguage: "acts" },
+    { name: "Zendaya", birthday: "1996-09-01", zodiac: "virgo", gender: "female", personality: "ambivert", loveLanguage: "time" },
+    { name: "Tom Holland", birthday: "1996-06-01", zodiac: "gemini", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Beyoncé", birthday: "1981-09-04", zodiac: "virgo", gender: "female", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Jay-Z", birthday: "1969-12-04", zodiac: "sagittarius", gender: "male", personality: "introvert", loveLanguage: "gifts" },
+    { name: "Taylor Swift", birthday: "1989-12-13", zodiac: "sagittarius", gender: "female", personality: "ambivert", loveLanguage: "words" },
+    { name: "Harry Styles", birthday: "1994-02-01", zodiac: "aquarius", gender: "male", personality: "extrovert", loveLanguage: "touch" },
+    { name: "Emma Watson", birthday: "1990-04-15", zodiac: "aries", gender: "female", personality: "introvert", loveLanguage: "acts" },
+    { name: "Timothée Chalamet", birthday: "1995-12-27", zodiac: "capricorn", gender: "male", personality: "introvert", loveLanguage: "time" },
+    { name: "Ariana Grande", birthday: "1993-06-26", zodiac: "cancer", gender: "female", personality: "extrovert", loveLanguage: "words" },
+    { name: "Dwayne Johnson", birthday: "1972-05-02", zodiac: "taurus", gender: "male", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Jennifer Lawrence", birthday: "1990-08-15", zodiac: "leo", gender: "female", personality: "extrovert", loveLanguage: "words" },
+    { name: "Brad Pitt", birthday: "1963-12-18", zodiac: "sagittarius", gender: "male", personality: "ambivert", loveLanguage: "time" },
+    { name: "Angelina Jolie", birthday: "1975-06-04", zodiac: "gemini", gender: "female", personality: "ambivert", loveLanguage: "acts" },
+    { name: "Keanu Reeves", birthday: "1964-09-02", zodiac: "virgo", gender: "male", personality: "introvert", loveLanguage: "acts" },
+    { name: "Rihanna", birthday: "1988-02-20", zodiac: "pisces", gender: "female", personality: "extrovert", loveLanguage: "gifts" },
+    { name: "Chris Evans", birthday: "1981-06-13", zodiac: "gemini", gender: "male", personality: "ambivert", loveLanguage: "time" }
+];
+
+/**
  * Utility Functions
  * Helper methods for calculations and validations
  */
@@ -117,6 +164,45 @@ const utils = {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    },
+
+    /**
+     * Get Chinese Zodiac sign from birth year
+     * @param {string} birthday - Date in YYYY-MM-DD format
+     * @returns {string} Chinese zodiac sign
+     */
+    getChineseZodiac(birthday) {
+        const year = new Date(birthday).getFullYear();
+        for (const [animal, data] of Object.entries(CHINESE_ZODIAC)) {
+            if (data.years.includes(year)) {
+                return animal;
+            }
+        }
+        // Fallback calculation for years not in the array
+        const animals = ['monkey', 'rooster', 'dog', 'pig', 'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'sheep'];
+        return animals[year % 12];
+    },
+
+    /**
+     * Calculate Life Path Number for numerology
+     * @param {string} birthday - Date in YYYY-MM-DD format
+     * @returns {number} Life path number (1-9, 11, 22, 33)
+     */
+    calculateLifePathNumber(birthday) {
+        const date = new Date(birthday);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+
+        // Sum all digits
+        let sum = day + month + year;
+
+        // Reduce to single digit (except master numbers 11, 22, 33)
+        while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+            sum = sum.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+        }
+
+        return sum;
     },
 
     saveToLocalStorage(data) {
@@ -254,6 +340,52 @@ class CompatibilityCalculator {
     calculateLoveLanguageCompatibility(lang1, lang2) {
         if (lang1 === lang2) return 90;
         return 70;
+    }
+
+    /**
+     * Calculate Chinese Zodiac compatibility score
+     * @param {string} animal1 - First Chinese zodiac animal
+     * @param {string} animal2 - Second Chinese zodiac animal
+     * @returns {number} Compatibility score (0-100)
+     */
+    calculateChineseZodiacCompatibility(animal1, animal2) {
+        const data = CHINESE_ZODIAC[animal1];
+        if (!data) return COMPATIBILITY_SCORES.NEUTRAL;
+
+        if (data.best.includes(animal2)) return 90;
+        if (data.worst.includes(animal2)) return 35;
+        return 68;
+    }
+
+    /**
+     * Calculate Numerology compatibility (Life Path Numbers)
+     * @param {number} num1 - First life path number
+     * @param {number} num2 - Second life path number
+     * @returns {number} Compatibility score (0-100)
+     */
+    calculateNumerologyCompatibility(num1, num2) {
+        // Same numbers are highly compatible
+        if (num1 === num2) return 92;
+
+        // Master number combinations
+        const masterNumbers = [11, 22, 33];
+        if (masterNumbers.includes(num1) && masterNumbers.includes(num2)) return 88;
+
+        // Compatible number pairs (based on numerology principles)
+        const compatiblePairs = {
+            1: [3, 5, 9],
+            2: [4, 6, 8],
+            3: [1, 5, 9],
+            4: [2, 6, 8],
+            5: [1, 3, 7],
+            6: [2, 4, 8, 9],
+            7: [5, 9],
+            8: [2, 4, 6],
+            9: [1, 3, 6, 7]
+        };
+
+        if (compatiblePairs[num1]?.includes(num2)) return 82;
+        return 60;
     }
 
     calculateReligiousCompatibility(data) {
@@ -417,6 +549,20 @@ class UIController {
             if (e.target.id === 'closeHistoryBtn' || e.target.closest('#closeHistoryBtn')) {
                 this.closeHistory();
             }
+            // Celebrity Match
+            if (e.target.id === 'celebrityMatchBtn' || e.target.closest('#celebrityMatchBtn')) {
+                this.showCelebrityMatch();
+            }
+            if (e.target.id === 'closeCelebrityBtn' || e.target.closest('#closeCelebrityBtn')) {
+                this.closeCelebrityMatch();
+            }
+            // Comparison Mode
+            if (e.target.id === 'comparisonModeBtn' || e.target.closest('#comparisonModeBtn')) {
+                this.showComparisonMode();
+            }
+            if (e.target.id === 'closeComparisonBtn' || e.target.closest('#closeComparisonBtn')) {
+                this.closeComparisonMode();
+            }
         });
 
         // Close modal on outside click
@@ -425,11 +571,29 @@ class UIController {
                 this.closeHistory();
             }
         });
+        document.getElementById('celebrityModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'celebrityModal') {
+                this.closeCelebrityMatch();
+            }
+        });
+        document.getElementById('comparisonModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'comparisonModal') {
+                this.closeComparisonMode();
+            }
+        });
 
         // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !document.getElementById('historyModal').classList.contains('hidden')) {
-                this.closeHistory();
+            if (e.key === 'Escape') {
+                if (!document.getElementById('historyModal').classList.contains('hidden')) {
+                    this.closeHistory();
+                }
+                if (!document.getElementById('celebrityModal').classList.contains('hidden')) {
+                    this.closeCelebrityMatch();
+                }
+                if (!document.getElementById('comparisonModal').classList.contains('hidden')) {
+                    this.closeComparisonMode();
+                }
             }
         });
 
@@ -700,10 +864,23 @@ class UIController {
             culturalScore += 5;
         }
         culturalScore = Math.min(100, Math.max(0, culturalScore));
+
+        // NEW: Chinese Zodiac compatibility
+        const yourChineseZodiac = utils.getChineseZodiac(data.yourBirthday);
+        const partnerChineseZodiac = utils.getChineseZodiac(data.partnerBirthday);
+        const chineseZodiacScore = this.calculator.calculateChineseZodiacCompatibility(yourChineseZodiac, partnerChineseZodiac);
+
+        // NEW: Numerology compatibility
+        const yourLifePath = utils.calculateLifePathNumber(data.yourBirthday);
+        const partnerLifePath = utils.calculateLifePathNumber(data.partnerBirthday);
+        const numerologyScore = this.calculator.calculateNumerologyCompatibility(yourLifePath, partnerLifePath);
+
         // Marriage compatibility (weighted average, more weight to religion/culture)
         const marriage = Math.round((zodiacScore * 0.15 + personalityScore * 0.15 + loveLanguageScore * 0.15 + ageScore * 0.15 + religiousScore * 0.2 + culturalScore * 0.2));
-        // Overall compatibility (all aspects, equal weight)
-        const overall = Math.round((zodiacScore + personalityScore + loveLanguageScore + ageScore + religiousScore + culturalScore) / 6);
+
+        // Overall compatibility (now includes 8 dimensions)
+        const overall = Math.round((zodiacScore + personalityScore + loveLanguageScore + ageScore + religiousScore + culturalScore + chineseZodiacScore + numerologyScore) / 8);
+
         return {
             overall,
             marriage,
@@ -712,7 +889,14 @@ class UIController {
             loveLanguage: Math.round(loveLanguageScore),
             age: Math.round(ageScore),
             religious: Math.round(religiousScore),
-            cultural: Math.round(culturalScore)
+            cultural: Math.round(culturalScore),
+            chineseZodiac: Math.round(chineseZodiacScore),
+            numerology: Math.round(numerologyScore),
+            // Store the actual zodiac signs and life path numbers for display
+            yourChineseZodiac,
+            partnerChineseZodiac,
+            yourLifePath,
+            partnerLifePath
         };
     }
 
@@ -833,8 +1017,16 @@ class UIController {
         document.getElementById('ageScore').textContent = scores.age + '%';
         document.getElementById('religiousScore').textContent = scores.religious + '%';
         document.getElementById('culturalScore').textContent = scores.cultural + '%';
+        document.getElementById('chineseZodiacScore').textContent = scores.chineseZodiac + '%';
+        document.getElementById('numerologyScore').textContent = scores.numerology + '%';
         document.getElementById('compatibilityPercent').textContent = scores.overall + '%';
         document.getElementById('marriagePercent').textContent = scores.marriage + '%';
+
+        // Set Chinese Zodiac animals and Life Path numbers
+        document.getElementById('chineseZodiacAnimals').textContent =
+            `(${scores.yourChineseZodiac} & ${scores.partnerChineseZodiac})`;
+        document.getElementById('lifePathNumbers').textContent =
+            `(${scores.yourLifePath} & ${scores.partnerLifePath})`;
         // Set compatibility titles
         let compatibilityTitle = '', marriageTitle = '';
         let compatibilityClass = '', marriageClass = '';
@@ -929,6 +1121,8 @@ class UIController {
             document.getElementById('ageBar').style.width = scores.age + '%';
             document.getElementById('religiousBar').style.width = scores.religious + '%';
             document.getElementById('culturalBar').style.width = scores.cultural + '%';
+            document.getElementById('chineseZodiacBar').style.width = scores.chineseZodiac + '%';
+            document.getElementById('numerologyBar').style.width = scores.numerology + '%';
         }, 100);
         // Scroll to results
         document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
@@ -1068,6 +1262,191 @@ class UIController {
         history.splice(index, 1);
         localStorage.setItem(CONFIG.storageKey, JSON.stringify(history));
         this.showHistory(); // Refresh the display
+    }
+
+    /**
+     * Show Celebrity Match modal with all celebrities
+     */
+    showCelebrityMatch() {
+        const formData = this.collectFormData();
+
+        // Need at least your information
+        if (!formData.yourName || !formData.yourBirthday || !formData.yourZodiac ||
+            !formData.yourPersonality || !formData.yourLoveLanguage) {
+            alert('Please fill in your personal information (Personal tab) first!');
+            return;
+        }
+
+        const celebrityResults = document.getElementById('celebrityResults');
+        const modal = document.getElementById('celebrityModal');
+        celebrityResults.innerHTML = '';
+
+        // Calculate compatibility with each celebrity
+        const matches = CELEBRITIES.map(celebrity => {
+            const tempData = {
+                yourName: formData.yourName,
+                yourBirthday: formData.yourBirthday,
+                yourZodiac: formData.yourZodiac,
+                yourPersonality: formData.yourPersonality,
+                yourLoveLanguage: formData.yourLoveLanguage,
+                yourGender: formData.yourGender,
+                partnerName: celebrity.name,
+                partnerBirthday: celebrity.birthday,
+                partnerZodiac: celebrity.zodiac,
+                partnerPersonality: celebrity.personality,
+                partnerLoveLanguage: celebrity.loveLanguage,
+                partnerGender: celebrity.gender,
+                // Dummy data for required fields
+                yourReligion: 'none',
+                partnerReligion: 'none',
+                yourReligionImportance: 'not',
+                partnerReligionImportance: 'not',
+                yourConversion: 'maybe',
+                partnerConversion: 'maybe',
+                yourCulture: 'western',
+                partnerCulture: 'western',
+                yourLanguage: 'English',
+                partnerLanguage: 'English',
+                yourTraditions: 'not',
+                partnerTraditions: 'not'
+            };
+
+            const scores = this.calculateFullCompatibility(tempData);
+            return { celebrity, score: scores.overall };
+        });
+
+        // Sort by compatibility
+        matches.sort((a, b) => b.score - a.score);
+
+        // Display results
+        matches.forEach(match => {
+            const card = document.createElement('div');
+            card.className = 'bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-pink-400 transition cursor-pointer transform hover:scale-105';
+
+            const scoreColor = match.score >= 80 ? 'text-green-600' :
+                              match.score >= 60 ? 'text-blue-600' :
+                              match.score >= 40 ? 'text-yellow-600' : 'text-red-600';
+
+            card.innerHTML = `
+                <div class="text-center">
+                    <div class="text-4xl mb-2">
+                        ${match.celebrity.gender === 'male' ? '👨' : '👩'}
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800">${match.celebrity.name}</h3>
+                    <p class="text-xs text-gray-500 capitalize">${match.celebrity.zodiac}</p>
+                    <div class="mt-3">
+                        <div class="text-3xl font-bold ${scoreColor}">${match.score}%</div>
+                        <div class="text-xs text-gray-600">Compatibility</div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        ${match.score >= 80 ? '💕 Perfect Match!' :
+                          match.score >= 60 ? '💖 Great Potential!' :
+                          match.score >= 40 ? '💗 Possible Match' : '💔 Challenging'}
+                    </div>
+                </div>
+            `;
+
+            celebrityResults.appendChild(card);
+        });
+
+        modal.classList.remove('hidden');
+        document.getElementById('closeCelebrityBtn').focus();
+    }
+
+    /**
+     * Show Comparison Mode modal with history
+     */
+    showComparisonMode() {
+        const history = utils.getFromLocalStorage();
+        const modal = document.getElementById('comparisonModal');
+        const content = document.getElementById('comparisonContent');
+
+        if (history.length < 2) {
+            content.innerHTML = `
+                <div class="text-center py-12 text-gray-500">
+                    <i class="fas fa-inbox text-6xl mb-4 opacity-30"></i>
+                    <p class="text-lg">You need at least 2 calculations in your history to compare</p>
+                    <p class="text-sm">Complete more compatibility checks first!</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            return;
+        }
+
+        // Create comparison table
+        let tableHTML = `
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-3 text-left font-semibold">Partner</th>
+                            <th class="p-3 text-center font-semibold">Love %</th>
+                            <th class="p-3 text-center font-semibold">Marriage %</th>
+                            <th class="p-3 text-center font-semibold">Zodiac</th>
+                            <th class="p-3 text-center font-semibold">Personality</th>
+                            <th class="p-3 text-center font-semibold">Love Lang.</th>
+                            <th class="p-3 text-center font-semibold">Age</th>
+                            <th class="p-3 text-center font-semibold">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        history.forEach((item, index) => {
+            const date = new Date(item.timestamp).toLocaleDateString();
+            const rowClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+
+            tableHTML += `
+                <tr class="${rowClass} hover:bg-blue-50 transition">
+                    <td class="p-3 font-medium text-pink-600">${utils.sanitize(item.names.partner)}</td>
+                    <td class="p-3 text-center">
+                        <span class="font-bold ${item.scores.overall >= 70 ? 'text-green-600' : 'text-gray-600'}">
+                            ${item.scores.overall}%
+                        </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        <span class="font-bold ${item.scores.marriage >= 70 ? 'text-green-600' : 'text-gray-600'}">
+                            ${item.scores.marriage}%
+                        </span>
+                    </td>
+                    <td class="p-3 text-center text-gray-600">${item.scores.zodiac}%</td>
+                    <td class="p-3 text-center text-gray-600">${item.scores.personality}%</td>
+                    <td class="p-3 text-center text-gray-600">${item.scores.loveLanguage}%</td>
+                    <td class="p-3 text-center text-gray-600">${item.scores.age}%</td>
+                    <td class="p-3 text-center text-xs text-gray-500">${date}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r">
+                <p class="text-sm text-blue-800">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    <strong>Tip:</strong> Higher percentages indicate better compatibility. Focus on overall compatibility and marriage scores for long-term potential.
+                </p>
+            </div>
+        `;
+
+        content.innerHTML = tableHTML;
+        modal.classList.remove('hidden');
+        document.getElementById('closeComparisonBtn').focus();
+    }
+
+    /**
+     * Close celebrity match modal
+     */
+    closeCelebrityMatch() {
+        document.getElementById('celebrityModal').classList.add('hidden');
+    }
+
+    /**
+     * Close comparison modal
+     */
+    closeComparisonMode() {
+        document.getElementById('comparisonModal').classList.add('hidden');
     }
 }
 

@@ -49,6 +49,17 @@
                 Love & Marriage Compatibility Calculator
             </h1>
             <p class="text-lg text-gray-700">Discover your romantic and marital compatibility based on multiple dimensions</p>
+
+            <!-- Feature Buttons -->
+            <div class="mt-6 flex flex-wrap justify-center gap-3">
+                <button id="celebrityMatchBtn" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transform transition hover:scale-105">
+                    <i class="fas fa-star mr-2"></i> Celebrity Match
+                </button>
+                <button id="comparisonModeBtn" class="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transform transition hover:scale-105">
+                    <i class="fas fa-balance-scale mr-2"></i> Compare Partners
+                </button>
+            </div>
+
             <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg max-w-3xl mx-auto">
                 <p class="text-sm text-yellow-800">
                     <i class="fas fa-info-circle mr-2"></i>
@@ -510,6 +521,24 @@
                                 <div class="bg-orange-600 h-2.5 rounded-full progress-bar" id="culturalBar" style="width: 0%"></div>
                             </div>
                         </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Chinese Zodiac <span id="chineseZodiacAnimals" class="text-xs"></span></span>
+                                <span class="text-sm font-medium text-gray-700" id="chineseZodiacScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-600 h-2.5 rounded-full progress-bar" id="chineseZodiacBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Numerology <span id="lifePathNumbers" class="text-xs"></span></span>
+                                <span class="text-sm font-medium text-gray-700" id="numerologyScore">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-indigo-600 h-2.5 rounded-full progress-bar" id="numerologyBar" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
@@ -540,6 +569,50 @@
                             <i class="fas fa-history mr-2"></i> View History
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebrity Match Modal -->
+    <div id="celebrityModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-labelledby="celebrityModalTitle" aria-modal="true">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 id="celebrityModalTitle" class="text-2xl font-bold">
+                        <i class="fas fa-star mr-2"></i>Celebrity Match - Find Your Soulmate!
+                    </h2>
+                    <button id="closeCelebrityBtn" class="text-white hover:bg-white/20 rounded-full p-2 transition" aria-label="Close celebrity match">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <p class="text-gray-600 mb-6 text-center">Compare your compatibility with your favorite celebrities!</p>
+                <div id="celebrityResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Celebrity cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Mode Modal -->
+    <div id="comparisonModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden" role="dialog" aria-labelledby="comparisonModalTitle" aria-modal="true">
+        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-teal-500 p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <h2 id="comparisonModalTitle" class="text-2xl font-bold">
+                        <i class="fas fa-balance-scale mr-2"></i>Compare Partners Side-by-Side
+                    </h2>
+                    <button id="closeComparisonBtn" class="text-white hover:bg-white/20 rounded-full p-2 transition" aria-label="Close comparison">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <p class="text-gray-600 mb-6 text-center">Select partners from your history to compare them side-by-side</p>
+                <div id="comparisonContent">
+                    <!-- Comparison table will be inserted here -->
                 </div>
             </div>
         </div>
