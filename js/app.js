@@ -74,29 +74,77 @@ const CHINESE_ZODIAC = {
 
 /**
  * Celebrity Database for Celebrity Match Feature
+ * Expanded to 50+ celebrities across multiple categories
  * @constant
  */
 const CELEBRITIES = [
+    // Hollywood A-List
     { name: "Ryan Reynolds", birthday: "1976-10-23", zodiac: "scorpio", gender: "male", personality: "extrovert", loveLanguage: "words" },
     { name: "Blake Lively", birthday: "1987-08-25", zodiac: "virgo", gender: "female", personality: "extrovert", loveLanguage: "time" },
     { name: "Chris Hemsworth", birthday: "1983-08-11", zodiac: "leo", gender: "male", personality: "extrovert", loveLanguage: "touch" },
     { name: "Scarlett Johansson", birthday: "1984-11-22", zodiac: "sagittarius", gender: "female", personality: "ambivert", loveLanguage: "acts" },
     { name: "Zendaya", birthday: "1996-09-01", zodiac: "virgo", gender: "female", personality: "ambivert", loveLanguage: "time" },
     { name: "Tom Holland", birthday: "1996-06-01", zodiac: "gemini", gender: "male", personality: "extrovert", loveLanguage: "words" },
-    { name: "Beyoncé", birthday: "1981-09-04", zodiac: "virgo", gender: "female", personality: "extrovert", loveLanguage: "acts" },
-    { name: "Jay-Z", birthday: "1969-12-04", zodiac: "sagittarius", gender: "male", personality: "introvert", loveLanguage: "gifts" },
-    { name: "Taylor Swift", birthday: "1989-12-13", zodiac: "sagittarius", gender: "female", personality: "ambivert", loveLanguage: "words" },
-    { name: "Harry Styles", birthday: "1994-02-01", zodiac: "aquarius", gender: "male", personality: "extrovert", loveLanguage: "touch" },
-    { name: "Emma Watson", birthday: "1990-04-15", zodiac: "aries", gender: "female", personality: "introvert", loveLanguage: "acts" },
-    { name: "Timothée Chalamet", birthday: "1995-12-27", zodiac: "capricorn", gender: "male", personality: "introvert", loveLanguage: "time" },
-    { name: "Ariana Grande", birthday: "1993-06-26", zodiac: "cancer", gender: "female", personality: "extrovert", loveLanguage: "words" },
-    { name: "Dwayne Johnson", birthday: "1972-05-02", zodiac: "taurus", gender: "male", personality: "extrovert", loveLanguage: "acts" },
     { name: "Jennifer Lawrence", birthday: "1990-08-15", zodiac: "leo", gender: "female", personality: "extrovert", loveLanguage: "words" },
     { name: "Brad Pitt", birthday: "1963-12-18", zodiac: "sagittarius", gender: "male", personality: "ambivert", loveLanguage: "time" },
     { name: "Angelina Jolie", birthday: "1975-06-04", zodiac: "gemini", gender: "female", personality: "ambivert", loveLanguage: "acts" },
     { name: "Keanu Reeves", birthday: "1964-09-02", zodiac: "virgo", gender: "male", personality: "introvert", loveLanguage: "acts" },
+    { name: "Dwayne Johnson", birthday: "1972-05-02", zodiac: "taurus", gender: "male", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Chris Evans", birthday: "1981-06-13", zodiac: "gemini", gender: "male", personality: "ambivert", loveLanguage: "time" },
+    { name: "Emma Watson", birthday: "1990-04-15", zodiac: "aries", gender: "female", personality: "introvert", loveLanguage: "acts" },
+    { name: "Timothée Chalamet", birthday: "1995-12-27", zodiac: "capricorn", gender: "male", personality: "introvert", loveLanguage: "time" },
+    { name: "Margot Robbie", birthday: "1990-07-02", zodiac: "cancer", gender: "female", personality: "extrovert", loveLanguage: "time" },
+    { name: "Tom Cruise", birthday: "1962-07-03", zodiac: "cancer", gender: "male", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Leonardo DiCaprio", birthday: "1974-11-11", zodiac: "scorpio", gender: "male", personality: "ambivert", loveLanguage: "gifts" },
+    { name: "Emma Stone", birthday: "1988-11-06", zodiac: "scorpio", gender: "female", personality: "ambivert", loveLanguage: "words" },
+    { name: "Robert Downey Jr.", birthday: "1965-04-04", zodiac: "aries", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Anne Hathaway", birthday: "1982-11-12", zodiac: "scorpio", gender: "female", personality: "ambivert", loveLanguage: "acts" },
+
+    // Musicians & Pop Stars
+    { name: "Taylor Swift", birthday: "1989-12-13", zodiac: "sagittarius", gender: "female", personality: "ambivert", loveLanguage: "words" },
+    { name: "Harry Styles", birthday: "1994-02-01", zodiac: "aquarius", gender: "male", personality: "extrovert", loveLanguage: "touch" },
+    { name: "Beyoncé", birthday: "1981-09-04", zodiac: "virgo", gender: "female", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Jay-Z", birthday: "1969-12-04", zodiac: "sagittarius", gender: "male", personality: "introvert", loveLanguage: "gifts" },
+    { name: "Ariana Grande", birthday: "1993-06-26", zodiac: "cancer", gender: "female", personality: "extrovert", loveLanguage: "words" },
     { name: "Rihanna", birthday: "1988-02-20", zodiac: "pisces", gender: "female", personality: "extrovert", loveLanguage: "gifts" },
-    { name: "Chris Evans", birthday: "1981-06-13", zodiac: "gemini", gender: "male", personality: "ambivert", loveLanguage: "time" }
+    { name: "The Weeknd", birthday: "1990-02-16", zodiac: "aquarius", gender: "male", personality: "introvert", loveLanguage: "time" },
+    { name: "Billie Eilish", birthday: "2001-12-18", zodiac: "sagittarius", gender: "female", personality: "introvert", loveLanguage: "time" },
+    { name: "Shawn Mendes", birthday: "1998-08-08", zodiac: "leo", gender: "male", personality: "extrovert", loveLanguage: "touch" },
+    { name: "Selena Gomez", birthday: "1992-07-22", zodiac: "cancer", gender: "female", personality: "ambivert", loveLanguage: "words" },
+    { name: "Justin Bieber", birthday: "1994-03-01", zodiac: "pisces", gender: "male", personality: "extrovert", loveLanguage: "touch" },
+    { name: "Dua Lipa", birthday: "1995-08-22", zodiac: "leo", gender: "female", personality: "extrovert", loveLanguage: "time" },
+    { name: "Ed Sheeran", birthday: "1991-02-17", zodiac: "aquarius", gender: "male", personality: "introvert", loveLanguage: "words" },
+    { name: "Adele", birthday: "1988-05-05", zodiac: "taurus", gender: "female", personality: "introvert", loveLanguage: "words" },
+
+    // Marvel & DC Universe
+    { name: "Tom Hiddleston", birthday: "1981-02-09", zodiac: "aquarius", gender: "male", personality: "introvert", loveLanguage: "words" },
+    { name: "Elizabeth Olsen", birthday: "1989-02-16", zodiac: "aquarius", gender: "female", personality: "introvert", loveLanguage: "acts" },
+    { name: "Paul Rudd", birthday: "1969-04-06", zodiac: "aries", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Brie Larson", birthday: "1989-10-01", zodiac: "libra", gender: "female", personality: "ambivert", loveLanguage: "acts" },
+    { name: "Sebastian Stan", birthday: "1982-08-13", zodiac: "leo", gender: "male", personality: "ambivert", loveLanguage: "time" },
+    { name: "Gal Gadot", birthday: "1985-04-30", zodiac: "taurus", gender: "female", personality: "extrovert", loveLanguage: "acts" },
+
+    // Comedy & Entertainment
+    { name: "Kevin Hart", birthday: "1979-07-06", zodiac: "cancer", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Amy Schumer", birthday: "1981-06-01", zodiac: "gemini", gender: "female", personality: "extrovert", loveLanguage: "words" },
+    { name: "John Mulaney", birthday: "1982-08-26", zodiac: "virgo", gender: "male", personality: "ambivert", loveLanguage: "words" },
+    { name: "Tiffany Haddish", birthday: "1979-12-03", zodiac: "sagittarius", gender: "female", personality: "extrovert", loveLanguage: "touch" },
+
+    // Netflix & Streaming Stars
+    { name: "Millie Bobby Brown", birthday: "2004-02-19", zodiac: "pisces", gender: "female", personality: "extrovert", loveLanguage: "time" },
+    { name: "Noah Schnapp", birthday: "2004-10-03", zodiac: "libra", gender: "male", personality: "extrovert", loveLanguage: "words" },
+    { name: "Penn Badgley", birthday: "1986-11-01", zodiac: "scorpio", gender: "male", personality: "introvert", loveLanguage: "acts" },
+    { name: "Lily Collins", birthday: "1989-03-18", zodiac: "pisces", gender: "female", personality: "ambivert", loveLanguage: "time" },
+
+    // K-Pop & International
+    { name: "BTS RM", birthday: "1994-09-12", zodiac: "virgo", gender: "male", personality: "introvert", loveLanguage: "words" },
+    { name: "BLACKPINK Jennie", birthday: "1996-01-16", zodiac: "capricorn", gender: "female", personality: "ambivert", loveLanguage: "gifts" },
+
+    // Sports Icons
+    { name: "Serena Williams", birthday: "1981-09-26", zodiac: "libra", gender: "female", personality: "extrovert", loveLanguage: "acts" },
+    { name: "LeBron James", birthday: "1984-12-30", zodiac: "capricorn", gender: "male", personality: "extrovert", loveLanguage: "acts" },
+    { name: "Tom Brady", birthday: "1977-08-03", zodiac: "leo", gender: "male", personality: "ambivert", loveLanguage: "acts" },
+    { name: "Simone Biles", birthday: "1997-03-14", zodiac: "pisces", gender: "female", personality: "extrovert", loveLanguage: "acts" }
 ];
 
 /**
@@ -537,8 +585,24 @@ class UIController {
 
         // New feature buttons (will be added after results are shown)
         document.addEventListener('click', (e) => {
+            // Share buttons
             if (e.target.id === 'shareBtn' || e.target.closest('#shareBtn')) {
                 this.handleShare();
+            }
+            if (e.target.id === 'shareTwitterBtn' || e.target.closest('#shareTwitterBtn')) {
+                this.shareToTwitter();
+            }
+            if (e.target.id === 'shareFacebookBtn' || e.target.closest('#shareFacebookBtn')) {
+                this.shareToFacebook();
+            }
+            if (e.target.id === 'shareWhatsAppBtn' || e.target.closest('#shareWhatsAppBtn')) {
+                this.shareToWhatsApp();
+            }
+            if (e.target.id === 'shareLinkedInBtn' || e.target.closest('#shareLinkedInBtn')) {
+                this.shareToLinkedIn();
+            }
+            if (e.target.id === 'emailBtn' || e.target.closest('#emailBtn')) {
+                this.handleEmail();
             }
             if (e.target.id === 'printBtn' || e.target.closest('#printBtn')) {
                 this.handlePrint();
@@ -1140,40 +1204,108 @@ class UIController {
     }
 
     /**
-     * Handle share button click
-     * Uses Web Share API if available, otherwise copies to clipboard
+     * Get share text for social media
+     * @returns {Object} Share data with text and URL
      */
-    async handleShare() {
+    getShareData() {
         const yourName = document.getElementById('yourNameResult').textContent;
         const partnerName = document.getElementById('partnerNameResult').textContent;
         const score = document.getElementById('compatibilityPercent').textContent;
         const marriageScore = document.getElementById('marriagePercent').textContent;
+        const url = window.location.origin + window.location.pathname;
 
-        const shareText = `${yourName} & ${partnerName} Compatibility Results!\n\n❤️ Love: ${score}\n💍 Marriage: ${marriageScore}\n\nCalculate your compatibility at ${window.location.href}`;
+        return {
+            yourName,
+            partnerName,
+            score,
+            marriageScore,
+            url,
+            shortText: `${yourName} & ${partnerName}: ${score} Love Compatibility!`,
+            fullText: `${yourName} & ${partnerName} Compatibility Results!\n\n❤️ Love: ${score}\n💍 Marriage: ${marriageScore}\n\nCalculate your compatibility at ${url}`,
+            hashtags: 'LoveCalculator,Compatibility,Relationship'
+        };
+    }
+
+    /**
+     * Share to Twitter
+     */
+    shareToTwitter() {
+        const data = this.getShareData();
+        const twitterText = `${data.yourName} & ${data.partnerName}: ${data.score} compatibility! 💕\n\nFind out your match at ${data.url}\n\n#${data.hashtags.split(',').join(' #')}`;
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}`;
+        window.open(twitterUrl, '_blank', 'width=550,height=420');
+    }
+
+    /**
+     * Share to Facebook
+     */
+    shareToFacebook() {
+        const data = this.getShareData();
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(data.url)}&quote=${encodeURIComponent(data.fullText)}`;
+        window.open(facebookUrl, '_blank', 'width=550,height=420');
+    }
+
+    /**
+     * Share to WhatsApp
+     */
+    shareToWhatsApp() {
+        const data = this.getShareData();
+        const whatsappText = `${data.fullText}`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    /**
+     * Share to LinkedIn
+     */
+    shareToLinkedIn() {
+        const data = this.getShareData();
+        const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(data.url)}`;
+        window.open(linkedInUrl, '_blank', 'width=550,height=420');
+    }
+
+    /**
+     * Handle share button click (Web Share API)
+     * Uses Web Share API if available, otherwise copies to clipboard
+     */
+    async handleShare() {
+        const data = this.getShareData();
 
         try {
             if (navigator.share) {
                 await navigator.share({
                     title: 'Love Compatibility Results',
-                    text: shareText,
-                    url: window.location.href
+                    text: data.fullText,
+                    url: data.url
                 });
             } else {
                 // Fallback to clipboard
-                await navigator.clipboard.writeText(shareText);
+                await navigator.clipboard.writeText(data.fullText);
                 alert('Results copied to clipboard! Share them with your friends.');
             }
         } catch (error) {
             console.error('Error sharing:', error);
             // Manual fallback
             const textArea = document.createElement('textarea');
-            textArea.value = shareText;
+            textArea.value = data.fullText;
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
             alert('Results copied to clipboard!');
         }
+    }
+
+    /**
+     * Send results via email
+     */
+    handleEmail() {
+        const data = this.getShareData();
+        const subject = `Love Compatibility: ${data.yourName} & ${data.partnerName}`;
+        const body = `${data.fullText}\n\n---\nSent from Love & Marriage Compatibility Calculator`;
+
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
     }
 
     /**

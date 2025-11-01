@@ -557,13 +557,33 @@
                         <button onclick="window.location.reload()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
                             <i class="fas fa-redo mr-2"></i> Try Another Match
                         </button>
-                        <button id="shareBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
-                            <i class="fas fa-share-alt mr-2"></i> Share Results
-                        </button>
                         <button id="printBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
                             <i class="fas fa-print mr-2"></i> Print
                         </button>
+                        <button id="emailBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full shadow transition transform hover:scale-105">
+                            <i class="fas fa-envelope mr-2"></i> Email
+                        </button>
                     </div>
+
+                    <!-- Social Media Share Buttons -->
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <button id="shareTwitterBtn" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fab fa-twitter mr-1"></i> Twitter
+                        </button>
+                        <button id="shareFacebookBtn" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fab fa-facebook-f mr-1"></i> Facebook
+                        </button>
+                        <button id="shareWhatsAppBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                        </button>
+                        <button id="shareLinkedInBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fab fa-linkedin-in mr-1"></i> LinkedIn
+                        </button>
+                        <button id="shareBtn" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-full shadow transition transform hover:scale-105 text-sm">
+                            <i class="fas fa-share-alt mr-1"></i> More
+                        </button>
+                    </div>
+
                     <div>
                         <button id="historyBtn" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-5 rounded-full shadow transition transform hover:scale-105 text-sm">
                             <i class="fas fa-history mr-2"></i> View History
@@ -588,7 +608,8 @@
                 </div>
             </div>
             <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-                <p class="text-gray-600 mb-6 text-center">Compare your compatibility with your favorite celebrities!</p>
+                <p class="text-gray-600 mb-4 text-center">Compare your compatibility with <strong class="text-purple-600">54 famous celebrities</strong>!</p>
+                <p class="text-sm text-gray-500 mb-6 text-center">Including Hollywood stars, musicians, Marvel heroes, sports icons & more!</p>
                 <div id="celebrityResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Celebrity cards will be inserted here -->
                 </div>
