@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Love & Marriage Compatibility Calculator</title>
     <meta name="description" content="Calculate your love and marriage compatibility based on multiple dimensions">
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;">
+
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="css/styles.css">
     <style>
         .heart-beat {
@@ -40,26 +49,33 @@
                 Love & Marriage Compatibility Calculator
             </h1>
             <p class="text-lg text-gray-700">Discover your romantic and marital compatibility based on multiple dimensions</p>
+            <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg max-w-3xl mx-auto">
+                <p class="text-sm text-yellow-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Disclaimer:</strong> This calculator is for entertainment and educational purposes only.
+                    Results should not be used to make serious relationship decisions.
+                </p>
+            </div>
         </div>
 
         <div class="bg-white rounded-xl shadow-xl overflow-hidden">
             <div class="p-8">
                 <form id="loveForm">
                     <!-- Tab Navigation -->
-                    <div class="tab-navigation">
-                        <button type="button" class="tab-button active" data-tab="personal" aria-selected="true">
-                            <i class="fas fa-user mr-2"></i>Personal
+                    <div class="tab-navigation" role="tablist" aria-label="Compatibility form sections">
+                        <button type="button" class="tab-button active" data-tab="personal" role="tab" aria-selected="true" aria-controls="personal" id="personal-tab" tabindex="0">
+                            <i class="fas fa-user mr-2" aria-hidden="true"></i>Personal
                         </button>
-                        <button type="button" class="tab-button" data-tab="religious" aria-selected="false">
-                            <i class="fas fa-praying-hands mr-2"></i>Religious
+                        <button type="button" class="tab-button" data-tab="religious" role="tab" aria-selected="false" aria-controls="religious" id="religious-tab" tabindex="-1">
+                            <i class="fas fa-praying-hands mr-2" aria-hidden="true"></i>Religious
                         </button>
-                        <button type="button" class="tab-button" data-tab="cultural" aria-selected="false">
-                            <i class="fas fa-globe mr-2"></i>Cultural
+                        <button type="button" class="tab-button" data-tab="cultural" role="tab" aria-selected="false" aria-controls="cultural" id="cultural-tab" tabindex="-1">
+                            <i class="fas fa-globe mr-2" aria-hidden="true"></i>Cultural
                         </button>
                     </div>
                     
                     <!-- Personal Tab -->
-                    <div id="personal" class="tab-content active">
+                    <div id="personal" class="tab-content active" role="tabpanel" aria-labelledby="personal-tab" tabindex="0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
@@ -203,7 +219,7 @@
                     </div>
                     
                     <!-- Religious Tab -->
-                    <div id="religious" class="tab-content">
+                    <div id="religious" class="tab-content" role="tabpanel" aria-labelledby="religious-tab" tabindex="0" hidden>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
@@ -298,7 +314,7 @@
                     </div>
                     
                     <!-- Cultural Tab -->
-                    <div id="cultural" class="tab-content">
+                    <div id="cultural" class="tab-content" role="tabpanel" aria-labelledby="cultural-tab" tabindex="0" hidden>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <h2 class="text-2xl font-semibold text-pink-600 mb-6 border-b border-pink-200 pb-2">
@@ -391,40 +407,50 @@
                 </div>
                 <div class="flex flex-col items-center mb-8">
                     <div class="relative w-64 h-64 mb-4">
-                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" role="img" aria-labelledby="compatibilityScoreLabel">
+                            <title id="compatibilityScoreLabel">Overall compatibility score</title>
                             <circle cx="50" cy="50" r="45" fill="none" stroke="#f3f4f6" stroke-width="8"/>
                             <circle id="compatibilityCircle" cx="50" cy="50" r="45" fill="none" stroke="#ec4899" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-                            <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" class="text-4xl font-bold fill-pink-600" id="compatibilityPercent">0%</text>
+                            <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" class="text-4xl font-bold fill-pink-600" id="compatibilityPercent" aria-live="polite">0%</text>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-semibold text-gray-800" id="compatibilityTitle">Calculating...</h3>
+                    <h3 class="text-2xl font-semibold text-gray-800" id="compatibilityTitle" aria-live="polite">Calculating...</h3>
                 </div>
                 <div class="flex flex-col items-center mb-8">
                     <div class="relative w-48 h-48 mb-4">
-                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" role="img" aria-labelledby="marriageScoreLabel">
+                            <title id="marriageScoreLabel">Marriage compatibility score</title>
                             <circle cx="50" cy="50" r="45" fill="none" stroke="#f3f4f6" stroke-width="8"/>
                             <circle id="marriageCircle" cx="50" cy="50" r="45" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-                            <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" class="text-3xl font-bold fill-green-600" id="marriagePercent">0%</text>
+                            <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" class="text-3xl font-bold fill-green-600" id="marriagePercent" aria-live="polite">0%</text>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-green-700" id="marriageTitle">Marriage Compatibility</h3>
+                    <h3 class="text-xl font-semibold text-green-700" id="marriageTitle" aria-live="polite">Marriage Compatibility</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div class="bg-pink-50 rounded-lg p-4">
                         <h4 class="font-semibold text-pink-700 mb-2"><i class="fas fa-star mr-2"></i>Strengths</h4>
                         <ul class="list-disc list-inside text-gray-700" id="strengthsList"></ul>
-                        <h5 class="font-semibold text-pink-500 mt-4 mb-1">Religious Strengths</h5>
-                        <ul class="list-disc list-inside text-gray-700" id="religiousStrengthsList"></ul>
-                        <h5 class="font-semibold text-pink-500 mt-4 mb-1">Cultural Strengths</h5>
-                        <ul class="list-disc list-inside text-gray-700" id="culturalStrengthsList"></ul>
+                        <div id="religiousStrengthsSection" class="hidden">
+                            <h5 class="font-semibold text-pink-500 mt-4 mb-1">Religious Strengths</h5>
+                            <ul class="list-disc list-inside text-gray-700" id="religiousStrengthsList"></ul>
+                        </div>
+                        <div id="culturalStrengthsSection" class="hidden">
+                            <h5 class="font-semibold text-pink-500 mt-4 mb-1">Cultural Strengths</h5>
+                            <ul class="list-disc list-inside text-gray-700" id="culturalStrengthsList"></ul>
+                        </div>
                     </div>
                     <div class="bg-blue-50 rounded-lg p-4">
                         <h4 class="font-semibold text-blue-700 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Challenges</h4>
                         <ul class="list-disc list-inside text-gray-700" id="challengesList"></ul>
-                        <h5 class="font-semibold text-blue-500 mt-4 mb-1">Religious Challenges</h5>
-                        <ul class="list-disc list-inside text-gray-700" id="religiousChallengesList"></ul>
-                        <h5 class="font-semibold text-blue-500 mt-4 mb-1">Cultural Challenges</h5>
-                        <ul class="list-disc list-inside text-gray-700" id="culturalChallengesList"></ul>
+                        <div id="religiousChallengesSection" class="hidden">
+                            <h5 class="font-semibold text-blue-500 mt-4 mb-1">Religious Challenges</h5>
+                            <ul class="list-disc list-inside text-gray-700" id="religiousChallengesList"></ul>
+                        </div>
+                        <div id="culturalChallengesSection" class="hidden">
+                            <h5 class="font-semibold text-blue-500 mt-4 mb-1">Cultural Challenges</h5>
+                            <ul class="list-disc list-inside text-gray-700" id="culturalChallengesList"></ul>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-6">

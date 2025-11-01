@@ -1,12 +1,67 @@
+/**
+ * Love & Marriage Compatibility Calculator
+ * @version 2.0
+ * @description A comprehensive compatibility calculator based on multiple dimensions
+ * @license MIT
+ */
+
 // Constants and Configuration
 const CONFIG = {
     storageKey: 'loveCalculatorData',
     maxHistoryItems: 10,
     calculationDelay: 2000, // ms
+    minAge: 18, // Minimum age requirement
+    minYear: 1900, // Minimum birth year
+    maxYear: new Date().getFullYear(), // Maximum birth year (current year)
 };
 
-// Utility Functions
+/**
+ * Zodiac Compatibility Matrix
+ * Based on astrological element theory (Fire, Earth, Air, Water)
+ * @constant
+ */
+const ZODIAC_COMPATIBILITY = {
+    aries: { best: ['leo', 'sagittarius', 'gemini', 'aquarius'], worst: ['cancer', 'capricorn'] },
+    taurus: { best: ['virgo', 'capricorn', 'cancer', 'pisces'], worst: ['leo', 'aquarius'] },
+    gemini: { best: ['libra', 'aquarius', 'aries', 'leo'], worst: ['virgo', 'pisces'] },
+    cancer: { best: ['scorpio', 'pisces', 'taurus', 'virgo'], worst: ['aries', 'libra'] },
+    leo: { best: ['aries', 'sagittarius', 'gemini', 'libra'], worst: ['taurus', 'scorpio'] },
+    virgo: { best: ['taurus', 'capricorn', 'cancer', 'scorpio'], worst: ['gemini', 'sagittarius'] },
+    libra: { best: ['gemini', 'aquarius', 'leo', 'sagittarius'], worst: ['cancer', 'capricorn'] },
+    scorpio: { best: ['cancer', 'pisces', 'virgo', 'capricorn'], worst: ['leo', 'aquarius'] },
+    sagittarius: { best: ['aries', 'leo', 'libra', 'aquarius'], worst: ['virgo', 'pisces'] },
+    capricorn: { best: ['taurus', 'virgo', 'scorpio', 'pisces'], worst: ['aries', 'libra'] },
+    aquarius: { best: ['gemini', 'libra', 'sagittarius', 'aries'], worst: ['taurus', 'scorpio'] },
+    pisces: { best: ['cancer', 'scorpio', 'taurus', 'capricorn'], worst: ['gemini', 'sagittarius'] }
+};
+
+/**
+ * Compatibility score ranges
+ * @constant
+ */
+const COMPATIBILITY_SCORES = {
+    PERFECT: 85,
+    GOOD: 70,
+    NEUTRAL: 50,
+    CHALLENGING: 35
+};
+
+/**
+ * Disclaimer message for entertainment purposes
+ * @constant
+ */
+const DISCLAIMER = "This calculator is for entertainment and educational purposes only. Results should not be used to make serious relationship decisions.";
+
+/**
+ * Utility Functions
+ * Helper methods for calculations and validations
+ */
 const utils = {
+    /**
+     * Calculate zodiac sign from birthday
+     * @param {string} birthday - Date in YYYY-MM-DD format
+     * @returns {string} Zodiac sign in lowercase
+     */
     getZodiacSign(birthday) {
         const date = new Date(birthday);
         const month = date.getMonth() + 1;
@@ -26,16 +81,42 @@ const utils = {
         return 'pisces';
     },
 
+    /**
+     * Calculate age from birthday
+     * @param {string} birthday - Date in YYYY-MM-DD format
+     * @returns {number} Age in years
+     */
     calculateAge(birthday) {
         const today = new Date();
         const birthDate = new Date(birthday);
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
-        
+
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
             age--;
         }
         return age;
+    },
+
+    /**
+     * Validate birth year is within acceptable range
+     * @param {string} birthday - Date in YYYY-MM-DD format
+     * @returns {boolean} True if valid year
+     */
+    isValidBirthYear(birthday) {
+        const year = new Date(birthday).getFullYear();
+        return year >= CONFIG.minYear && year <= CONFIG.maxYear;
+    },
+
+    /**
+     * Sanitize user input to prevent XSS
+     * @param {string} str - Input string
+     * @returns {string} Sanitized string
+     */
+    sanitize(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     },
 
     saveToLocalStorage(data) {
@@ -62,6 +143,12 @@ const utils = {
         }
     },
 
+    /**
+     * Validate form data with comprehensive edge case handling
+     * @param {Object} formData - Form data object
+     * @param {string} activeTab - Currently active tab ID
+     * @returns {Object} Validation result with isValid flag and errors object
+     */
     validateForm(formData, activeTab) {
         const errors = {};
         const requiredFields = {
@@ -72,23 +159,58 @@ const utils = {
 
         // Only validate fields in the active tab
         const fieldsToValidate = requiredFields[activeTab] || requiredFields.personal;
-        
+
         fieldsToValidate.forEach(field => {
-            if (!formData[field] || !formData[field].trim()) {
+            if (!formData[field] || (typeof formData[field] === 'string' && !formData[field].trim())) {
                 errors[field] = `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`;
             }
         });
 
-        // Age validation for personal tab
+        // Additional validations for personal tab
         if (activeTab === 'personal') {
-            const yourAge = this.calculateAge(formData.yourBirthday);
-            const partnerAge = this.calculateAge(formData.partnerBirthday);
-            
-            if (yourAge < 18) {
-                errors.yourBirthday = 'You must be at least 18 years old';
+            // Check if comparing same person
+            if (formData.yourName && formData.partnerName &&
+                formData.yourName.trim().toLowerCase() === formData.partnerName.trim().toLowerCase()) {
+                errors.form = 'Please enter two different people for comparison';
             }
-            if (partnerAge < 18) {
-                errors.partnerBirthday = 'Partner must be at least 18 years old';
+
+            // Birth year validation
+            if (formData.yourBirthday) {
+                if (!this.isValidBirthYear(formData.yourBirthday)) {
+                    errors.yourBirthday = `Birth year must be between ${CONFIG.minYear} and ${CONFIG.maxYear}`;
+                }
+
+                const yourAge = this.calculateAge(formData.yourBirthday);
+                if (yourAge < CONFIG.minAge) {
+                    errors.yourBirthday = `You must be at least ${CONFIG.minAge} years old`;
+                }
+                if (yourAge > 150) {
+                    errors.yourBirthday = 'Please enter a valid birth date';
+                }
+            }
+
+            if (formData.partnerBirthday) {
+                if (!this.isValidBirthYear(formData.partnerBirthday)) {
+                    errors.partnerBirthday = `Birth year must be between ${CONFIG.minYear} and ${CONFIG.maxYear}`;
+                }
+
+                const partnerAge = this.calculateAge(formData.partnerBirthday);
+                if (partnerAge < CONFIG.minAge) {
+                    errors.partnerBirthday = `Partner must be at least ${CONFIG.minAge} years old`;
+                }
+                if (partnerAge > 150) {
+                    errors.partnerBirthday = 'Please enter a valid birth date';
+                }
+            }
+        }
+
+        // Validate language fields are not empty for cultural tab
+        if (activeTab === 'cultural') {
+            if (formData.yourLanguage && formData.yourLanguage.trim().length < 2) {
+                errors.yourLanguage = 'Please enter a valid language';
+            }
+            if (formData.partnerLanguage && formData.partnerLanguage.trim().length < 2) {
+                errors.partnerLanguage = 'Please enter a valid language';
             }
         }
 
@@ -99,30 +221,28 @@ const utils = {
     }
 };
 
-// Compatibility Calculator
+/**
+ * Compatibility Calculator
+ * Core calculation logic for relationship compatibility
+ */
 class CompatibilityCalculator {
     constructor() {
-        this.zodiacCompatibility = {
-            aries: { compatible: ['leo', 'sagittarius', 'gemini'], incompatible: ['cancer', 'capricorn'] },
-            taurus: { compatible: ['virgo', 'capricorn', 'cancer'], incompatible: ['leo', 'aquarius'] },
-            gemini: { compatible: ['libra', 'aquarius', 'leo'], incompatible: ['virgo', 'pisces'] },
-            cancer: { compatible: ['scorpio', 'pisces', 'taurus'], incompatible: ['aries', 'libra'] },
-            leo: { compatible: ['aries', 'sagittarius', 'gemini'], incompatible: ['taurus', 'scorpio'] },
-            virgo: { compatible: ['taurus', 'capricorn', 'cancer'], incompatible: ['gemini', 'sagittarius'] },
-            libra: { compatible: ['gemini', 'aquarius', 'leo'], incompatible: ['cancer', 'capricorn'] },
-            scorpio: { compatible: ['cancer', 'pisces', 'virgo'], incompatible: ['leo', 'aquarius'] },
-            sagittarius: { compatible: ['aries', 'leo', 'aquarius'], incompatible: ['virgo', 'pisces'] },
-            capricorn: { compatible: ['taurus', 'virgo', 'scorpio'], incompatible: ['aries', 'libra'] },
-            aquarius: { compatible: ['gemini', 'libra', 'sagittarius'], incompatible: ['taurus', 'scorpio'] },
-            pisces: { compatible: ['cancer', 'scorpio', 'taurus'], incompatible: ['gemini', 'sagittarius'] }
-        };
+        // No need to duplicate zodiac data - use global constant
     }
 
+    /**
+     * Calculate zodiac compatibility score
+     * @param {string} sign1 - First zodiac sign
+     * @param {string} sign2 - Second zodiac sign
+     * @returns {number} Compatibility score (0-100)
+     */
     calculateZodiacCompatibility(sign1, sign2) {
-        const compatibility = this.zodiacCompatibility[sign1];
-        if (compatibility.compatible.includes(sign2)) return 90;
-        if (compatibility.incompatible.includes(sign2)) return 40;
-        return 70;
+        const compatibility = ZODIAC_COMPATIBILITY[sign1];
+        if (!compatibility) return COMPATIBILITY_SCORES.NEUTRAL;
+
+        if (compatibility.best.includes(sign2)) return COMPATIBILITY_SCORES.PERFECT;
+        if (compatibility.worst.includes(sign2)) return COMPATIBILITY_SCORES.CHALLENGING;
+        return COMPATIBILITY_SCORES.GOOD;
     }
 
     calculatePersonalityCompatibility(type1, type2) {
@@ -256,6 +376,9 @@ class UIController {
         this.initializeEventListeners();
     }
 
+    /**
+     * Initialize all event listeners for the application
+     */
     initializeEventListeners() {
         // Form submission (only on last tab)
         document.getElementById('loveForm').addEventListener('submit', this.handleFormSubmit.bind(this));
@@ -274,6 +397,64 @@ class UIController {
         ['yourBirthday', 'partnerBirthday'].forEach(id => {
             document.getElementById(id).addEventListener('change', this.handleBirthdayChange.bind(this));
         });
+
+        // Keyboard navigation for tabs
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('keydown', this.handleTabKeydown.bind(this));
+        });
+
+        // Add global error handler for better UX
+        window.addEventListener('error', this.handleGlobalError.bind(this));
+    }
+
+    /**
+     * Handle keyboard navigation for tab buttons (Arrow keys)
+     * @param {KeyboardEvent} event - Keyboard event
+     */
+    handleTabKeydown(event) {
+        const tabs = Array.from(document.querySelectorAll('.tab-button'));
+        const currentIndex = tabs.indexOf(event.target);
+
+        let targetTab = null;
+
+        switch (event.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+                event.preventDefault();
+                targetTab = tabs[currentIndex + 1] || tabs[0];
+                break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                event.preventDefault();
+                targetTab = tabs[currentIndex - 1] || tabs[tabs.length - 1];
+                break;
+            case 'Home':
+                event.preventDefault();
+                targetTab = tabs[0];
+                break;
+            case 'End':
+                event.preventDefault();
+                targetTab = tabs[tabs.length - 1];
+                break;
+            default:
+                return;
+        }
+
+        if (targetTab) {
+            targetTab.focus();
+            // Update tabindex
+            tabs.forEach(tab => tab.setAttribute('tabindex', '-1'));
+            targetTab.setAttribute('tabindex', '0');
+        }
+    }
+
+    /**
+     * Handle global application errors
+     * @param {ErrorEvent} event - Error event
+     */
+    handleGlobalError(event) {
+        console.error('Application error:', event.error);
+        // Could send to error tracking service here
     }
 
     handleNextTab(event) {
@@ -298,14 +479,30 @@ class UIController {
         // Disable manual tab switching for step-by-step
     }
 
+    /**
+     * Switch to a different tab with proper ARIA management
+     * @param {string} tabId - ID of the tab to switch to
+     */
     switchTab(tabId) {
-        // Update active tab button
+        // Update active tab button and ARIA attributes
         document.querySelectorAll('.tab-button').forEach(button => {
-            button.classList.toggle('active', button.dataset.tab === tabId);
+            const isActive = button.dataset.tab === tabId;
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-selected', isActive.toString());
+            button.setAttribute('tabindex', isActive ? '0' : '-1');
         });
-        // Show active tab content
+
+        // Show active tab content and manage hidden attribute
         document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.toggle('active', content.id === tabId);
+            const isActive = content.id === tabId;
+            content.classList.toggle('active', isActive);
+
+            if (isActive) {
+                content.removeAttribute('hidden');
+                content.focus(); // Focus the tab panel for screen readers
+            } else {
+                content.setAttribute('hidden', '');
+            }
         });
     }
 
@@ -396,62 +593,55 @@ class UIController {
         }
     }
 
-    // --- Enhanced compatibility calculation ---
+    /**
+     * Calculate comprehensive compatibility across all dimensions
+     * @param {Object} data - Form data with all user inputs
+     * @returns {Object} Scores object with overall, marriage, and individual dimension scores
+     */
     calculateFullCompatibility(data) {
-        // Age compatibility
+        // Age compatibility calculation
         const yourBirthday = new Date(data.yourBirthday);
         const partnerBirthday = new Date(data.partnerBirthday);
         const ageDiff = Math.abs(yourBirthday.getFullYear() - partnerBirthday.getFullYear());
         const ageScore = Math.max(0, 100 - (ageDiff * 2));
-        // Zodiac compatibility
-        const zodiacCompatibility = {
-            aries: { best: ['leo', 'sagittarius', 'gemini', 'aquarius'], worst: ['cancer', 'capricorn'] },
-            taurus: { best: ['virgo', 'capricorn', 'cancer', 'pisces'], worst: ['leo', 'aquarius'] },
-            gemini: { best: ['libra', 'aquarius', 'aries', 'leo'], worst: ['virgo', 'pisces'] },
-            cancer: { best: ['scorpio', 'pisces', 'taurus', 'virgo'], worst: ['aries', 'libra'] },
-            leo: { best: ['aries', 'sagittarius', 'gemini', 'libra'], worst: ['taurus', 'scorpio'] },
-            virgo: { best: ['taurus', 'capricorn', 'cancer', 'scorpio'], worst: ['gemini', 'sagittarius'] },
-            libra: { best: ['gemini', 'aquarius', 'leo', 'sagittarius'], worst: ['cancer', 'capricorn'] },
-            scorpio: { best: ['cancer', 'pisces', 'virgo', 'capricorn'], worst: ['leo', 'aquarius'] },
-            sagittarius: { best: ['aries', 'leo', 'libra', 'aquarius'], worst: ['virgo', 'pisces'] },
-            capricorn: { best: ['taurus', 'virgo', 'scorpio', 'pisces'], worst: ['aries', 'libra'] },
-            aquarius: { best: ['gemini', 'libra', 'sagittarius', 'aries'], worst: ['taurus', 'scorpio'] },
-            pisces: { best: ['cancer', 'scorpio', 'taurus', 'capricorn'], worst: ['gemini', 'sagittarius'] }
-        };
+
+        // Zodiac compatibility (using global constant - no randomness)
         let zodiacScore = 50;
-        if (zodiacCompatibility[data.yourZodiac]?.best.includes(data.partnerZodiac)) {
-            zodiacScore = 85 + Math.random() * 15;
-        } else if (zodiacCompatibility[data.yourZodiac]?.worst.includes(data.partnerZodiac)) {
-            zodiacScore = 15 + Math.random() * 20;
+        if (ZODIAC_COMPATIBILITY[data.yourZodiac]?.best.includes(data.partnerZodiac)) {
+            zodiacScore = 88;
+        } else if (ZODIAC_COMPATIBILITY[data.yourZodiac]?.worst.includes(data.partnerZodiac)) {
+            zodiacScore = 32;
         } else {
-            zodiacScore = 50 + Math.random() * 30;
+            zodiacScore = 65;
         }
         zodiacScore = Math.min(100, Math.max(0, zodiacScore));
-        // Personality compatibility
+
+        // Personality compatibility (consistent scoring)
         let personalityScore = 50;
         if (data.yourPersonality === data.partnerPersonality) {
-            personalityScore = 70 + Math.random() * 20;
+            personalityScore = 82;
         } else if (
             (data.yourPersonality === 'extrovert' && data.partnerPersonality === 'introvert') ||
             (data.yourPersonality === 'introvert' && data.partnerPersonality === 'extrovert')
         ) {
-            personalityScore = 40 + Math.random() * 30;
+            personalityScore = 58;
         } else {
-            personalityScore = 60 + Math.random() * 30;
+            personalityScore = 75; // Ambivert combinations
         }
-        // Love language compatibility
+
+        // Love language compatibility (consistent scoring)
         let loveLanguageScore = 50;
         if (data.yourLoveLanguage === data.partnerLoveLanguage) {
-            loveLanguageScore = 80 + Math.random() * 20;
+            loveLanguageScore = 90;
         } else if (
             (data.yourLoveLanguage === 'words' && data.partnerLoveLanguage === 'acts') ||
             (data.yourLoveLanguage === 'acts' && data.partnerLoveLanguage === 'words') ||
             (data.yourLoveLanguage === 'gifts' && data.partnerLoveLanguage === 'time') ||
             (data.yourLoveLanguage === 'time' && data.partnerLoveLanguage === 'gifts')
         ) {
-            loveLanguageScore = 30 + Math.random() * 20;
+            loveLanguageScore = 40;
         } else {
-            loveLanguageScore = 50 + Math.random() * 30;
+            loveLanguageScore = 68;
         }
         // Religious compatibility
         let religiousScore = 70;
@@ -496,31 +686,22 @@ class UIController {
         };
     }
 
+    /**
+     * Generate detailed compatibility report with strengths and challenges
+     * @param {Object} data - Form data
+     * @param {Object} scores - Calculated compatibility scores
+     * @returns {Object} Report with strengths and challenges arrays
+     */
     generateFullReport(data, scores) {
-        // General strengths/challenges
+        // Initialize result arrays
         const strengths = [], challenges = [];
-        // Religious
         const religiousStrengths = [], religiousChallenges = [];
-        // Cultural
         const culturalStrengths = [], culturalChallenges = [];
-        // Zodiac
-        const zodiacCompatibility = {
-            aries: { best: ['leo', 'sagittarius', 'gemini', 'aquarius'], worst: ['cancer', 'capricorn'] },
-            taurus: { best: ['virgo', 'capricorn', 'cancer', 'pisces'], worst: ['leo', 'aquarius'] },
-            gemini: { best: ['libra', 'aquarius', 'aries', 'leo'], worst: ['virgo', 'pisces'] },
-            cancer: { best: ['scorpio', 'pisces', 'taurus', 'virgo'], worst: ['aries', 'libra'] },
-            leo: { best: ['aries', 'sagittarius', 'gemini', 'libra'], worst: ['taurus', 'scorpio'] },
-            virgo: { best: ['taurus', 'capricorn', 'cancer', 'scorpio'], worst: ['gemini', 'sagittarius'] },
-            libra: { best: ['gemini', 'aquarius', 'leo', 'sagittarius'], worst: ['cancer', 'capricorn'] },
-            scorpio: { best: ['cancer', 'pisces', 'virgo', 'capricorn'], worst: ['leo', 'aquarius'] },
-            sagittarius: { best: ['aries', 'leo', 'libra', 'aquarius'], worst: ['virgo', 'pisces'] },
-            capricorn: { best: ['taurus', 'virgo', 'scorpio', 'pisces'], worst: ['aries', 'libra'] },
-            aquarius: { best: ['gemini', 'libra', 'sagittarius', 'aries'], worst: ['taurus', 'scorpio'] },
-            pisces: { best: ['cancer', 'scorpio', 'taurus', 'capricorn'], worst: ['gemini', 'sagittarius'] }
-        };
-        if (zodiacCompatibility[data.yourZodiac]?.best.includes(data.partnerZodiac)) {
+
+        // Zodiac analysis (using global constant)
+        if (ZODIAC_COMPATIBILITY[data.yourZodiac]?.best.includes(data.partnerZodiac)) {
             strengths.push(`Your ${data.yourZodiac} and their ${data.partnerZodiac} signs are highly compatible`);
-        } else if (zodiacCompatibility[data.yourZodiac]?.worst.includes(data.partnerZodiac)) {
+        } else if (ZODIAC_COMPATIBILITY[data.yourZodiac]?.worst.includes(data.partnerZodiac)) {
             challenges.push(`Your ${data.yourZodiac} and their ${data.partnerZodiac} signs may clash at times`);
         } else {
             strengths.push(`Your ${data.yourZodiac} and their ${data.partnerZodiac} signs can work well together`);
@@ -605,10 +786,16 @@ class UIController {
         return names[code] || code;
     }
 
+    /**
+     * Display comprehensive results with animations
+     * @param {Object} formData - User input data
+     * @param {Object} scores - Calculated compatibility scores
+     * @param {Object} report - Generated compatibility report
+     */
     async showFullResults(formData, scores, report) {
-        // Set names
-        document.getElementById('yourNameResult').textContent = formData.yourName;
-        document.getElementById('partnerNameResult').textContent = formData.partnerName;
+        // Set names (sanitized for XSS protection)
+        document.getElementById('yourNameResult').textContent = utils.sanitize(formData.yourName);
+        document.getElementById('partnerNameResult').textContent = utils.sanitize(formData.partnerName);
         // Set scores
         document.getElementById('zodiacScore').textContent = scores.zodiac + '%';
         document.getElementById('personalityScore').textContent = scores.personality + '%';
@@ -651,16 +838,24 @@ class UIController {
         document.getElementById('compatibilityTitle').className = `text-2xl font-semibold ${compatibilityClass}`;
         document.getElementById('marriageTitle').textContent = marriageTitle;
         document.getElementById('marriageTitle').className = `text-xl font-semibold ${marriageClass}`;
-        // Set strengths and challenges
-        const setList = (id, arr, label) => {
+        // Set strengths and challenges with proper section visibility
+        const setList = (id, arr, sectionId = null) => {
             const el = document.getElementById(id);
             el.innerHTML = '';
+
             if (arr.length === 0) {
-                const li = document.createElement('li');
-                li.textContent = `No ${label} identified.`;
-                li.className = 'mb-1 italic text-gray-400';
-                el.appendChild(li);
+                // Hide the entire section if there's no content
+                if (sectionId) {
+                    const section = document.getElementById(sectionId);
+                    if (section) section.classList.add('hidden');
+                }
             } else {
+                // Show section if it has content
+                if (sectionId) {
+                    const section = document.getElementById(sectionId);
+                    if (section) section.classList.remove('hidden');
+                }
+
                 arr.forEach(text => {
                     const li = document.createElement('li');
                     li.textContent = text;
@@ -669,12 +864,18 @@ class UIController {
                 });
             }
         };
-        setList('strengthsList', report.strengths, 'general strengths');
-        setList('challengesList', report.challenges, 'general challenges');
-        setList('religiousStrengthsList', report.religiousStrengths, 'religious strengths');
-        setList('religiousChallengesList', report.religiousChallenges, 'religious challenges');
-        setList('culturalStrengthsList', report.culturalStrengths, 'cultural strengths');
-        setList('culturalChallengesList', report.culturalChallenges, 'cultural challenges');
+
+        // Main lists (always visible)
+        setList('strengthsList', report.strengths);
+        setList('challengesList', report.challenges);
+
+        // Religious lists (hide section if empty)
+        setList('religiousStrengthsList', report.religiousStrengths, 'religiousStrengthsSection');
+        setList('religiousChallengesList', report.religiousChallenges, 'religiousChallengesSection');
+
+        // Cultural lists (hide section if empty)
+        setList('culturalStrengthsList', report.culturalStrengths, 'culturalStrengthsSection');
+        setList('culturalChallengesList', report.culturalChallenges, 'culturalChallengesSection');
         // Relationship & marriage advice
         const adviceElement = document.getElementById('relationshipAdvice');
         if (scores.marriage >= 80) {
