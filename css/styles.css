@@ -210,13 +210,70 @@
 
 /* Print Styles */
 @media print {
+    /* Hide non-essential elements */
     .tab-navigation,
-    .form-container {
-        display: none;
+    form,
+    button,
+    .gradient-bg {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
     }
 
     .result-card {
         box-shadow: none;
         border: 1px solid #e5e7eb;
+        page-break-inside: avoid;
     }
+
+    /* Ensure good contrast for printing */
+    .text-pink-600,
+    .text-pink-700 {
+        color: #db2777 !important;
+    }
+
+    .text-green-600,
+    .text-green-700 {
+        color: #059669 !important;
+    }
+
+    /* Make sure backgrounds show */
+    .bg-pink-50,
+    .bg-blue-50,
+    .bg-yellow-50 {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Optimize page breaks */
+    h2, h3, h4 {
+        page-break-after: avoid;
+    }
+
+    ul, ol {
+        page-break-inside: avoid;
+    }
+}
+
+/* Modal Styles */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+/* Animation for modal */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#historyModal:not(.hidden) > div {
+    animation: modalFadeIn 0.2s ease-out;
 } 
